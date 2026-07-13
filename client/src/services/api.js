@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+const API_URL = isProduction ? 'https://server-rust-delta.vercel.app/api' : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,7 +36,7 @@ api.interceptors.response.use(
         }
 
         // Call the refresh endpoint
-        const response = await axios.post('/api/auth/refresh', { token: refreshToken });
+        const response = await axios.post(`${API_URL}/auth/refresh`, { token: refreshToken });
         const { accessToken } = response.data;
 
         localStorage.setItem('token', accessToken);
