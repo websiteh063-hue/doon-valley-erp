@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Plus, Calendar, CreditCard } from 'lucide-react';
+import { DollarSign, Plus, Calendar, CreditCard, Edit, Trash2, X } from 'lucide-react';
 
 export default function FeesConfig() {
   const [feeHeads, setFeeHeads] = useState([
@@ -10,6 +10,8 @@ export default function FeesConfig() {
   ]);
 
   const [formData, setFormData] = useState({ name: '', amount: '', frequency: 'Quarterly', class: 'Class I - X' });
+  const [editingFee, setEditingFee] = useState(null);
+  const [success, setSuccess] = useState('');
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -25,7 +27,27 @@ export default function FeesConfig() {
       }
     ]);
     setFormData({ name: '', amount: '', frequency: 'Quarterly', class: 'Class I - X' });
+    setSuccess('Fee header created successfully!');
+    setTimeout(() => setSuccess(''), 3000);
   };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    setFeeHeads((prev) =>
+      prev.map((f) => (f.id === editingFee.id ? { ...f, ...editingFee } : f))
+    );
+    setSuccess('Fee structure updated successfully!');
+    setEditingFee(null);
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const handleDelete = (id) => {
+    setFeeHeads((prev) => prev.filter((f) => f.id !== id));
+    setSuccess('Fee component removed.');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const labelClass = "block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2";
 
   return (
     <div className="space-y-8">
@@ -34,6 +56,12 @@ export default function FeesConfig() {
         <p className="text-slate-400 text-sm">Configure administrative billing schemas, tuition rates, and transport fees.</p>
       </div>
 
+      {success && (
+        <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm rounded-2xl p-4 text-center font-medium">
+          {success}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <form onSubmit={handleAdd} className="glass-panel rounded-3xl p-6 space-y-6 border border-slate-850 h-fit">
           <h3 className="font-extrabold text-white text-sm tracking-widest uppercase border-b border-slate-800 pb-3 flex items-center gap-2">
@@ -41,7 +69,7 @@ export default function FeesConfig() {
             Create Fee Header
           </h3>
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Fee Name</label>
+            <label className={labelClass}>Fee Name</label>
             <input
               type="text"
               required
@@ -52,7 +80,7 @@ export default function FeesConfig() {
             />
           </div>
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Amount (₹)</label>
+            <label className={labelClass}>Amount (₹)</label>
             <input
               type="number"
               required
@@ -63,9 +91,9 @@ export default function FeesConfig() {
             />
           </div>
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Frequency</label>
+            <label className={labelClass}>Frequency</label>
             <select
-              className="w-full premium-input py-2.5 px-4 text-slate-300 focus:outline-none text-xs cursor-pointer"
+              className="w-full premium-input py-2.5 px-4 text-slate-330 focus:outline-none text-xs cursor-pointer"
               value={formData.frequency}
               onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
             >
@@ -76,7 +104,7 @@ export default function FeesConfig() {
             </select>
           </div>
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Applicable Students</label>
+            <label className={labelClass}>Applicable Students</label>
             <input
               type="text"
               placeholder="e.g. All Students / New Admissions"
@@ -123,11 +151,12 @@ export default function FeesConfig() {
                   <th className="py-4.5 px-6">Applicable Classes</th>
                   <th className="py-4.5 px-6">Frequency</th>
                   <th className="py-4.5 px-6 text-right">Standard Amount</th>
+                  <th className="py-4.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-850/50">
                 {feeHeads.map((f) => (
-                  <tr key={f.id} className="hover:bg-slate-900/20 transition-all duration-200">
+                  <tr key={f.id} className="hover:bg-slate-900/20 transition-all duration-200 group">
                     <td className="py-4.5 px-6 font-bold text-slate-200 flex items-center gap-2">
                       <DollarSign size={14} className="text-indigo-400" />
                       {f.name}
@@ -141,6 +170,20 @@ export default function FeesConfig() {
                     <td className="py-4.5 px-6 text-slate-200 font-extrabold font-mono text-right text-xs">
                       ₹{f.amount.toLocaleString()}
                     </td>
+                    <td className="py-4.5 px-6 text-right flex justify-end gap-2">
+                      <button
+                        onClick={() => setEditingFee(f)}
+                        className="p-2 text-indigo-400 hover:text-white rounded-xl hover:bg-indigo-600/20 transition-colors cursor-pointer"
+                      >
+                        <Edit size={14} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(f.id)}
+                        className="p-2 text-rose-455 hover:text-white rounded-xl hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -148,6 +191,89 @@ export default function FeesConfig() {
           </div>
         </div>
       </div>
+
+      {/* Edit Fee Modal */}
+      {editingFee && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <form onSubmit={handleEditSubmit} className="w-full max-w-md glass-panel rounded-3xl p-8 border border-slate-850 space-y-6 relative">
+            <button
+              type="button"
+              onClick={() => setEditingFee(null)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-white cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+
+            <h3 className="font-extrabold text-white text-base tracking-widest uppercase border-b border-slate-800 pb-3 flex items-center gap-2">
+              <DollarSign size={18} className="text-indigo-400" />
+              Edit Fee Details
+            </h3>
+
+            <div>
+              <label className={labelClass}>Fee Name</label>
+              <input
+                type="text"
+                required
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={editingFee.name}
+                onChange={(e) => setEditingFee({ ...editingFee, name: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Amount (₹)</label>
+              <input
+                type="number"
+                required
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={editingFee.amount}
+                onChange={(e) => setEditingFee({ ...editingFee, amount: Number(e.target.value) })}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Frequency</label>
+                <select
+                  className="w-full premium-input py-2.5 px-4 text-slate-330 focus:outline-none text-xs cursor-pointer"
+                  value={editingFee.frequency}
+                  onChange={(e) => setEditingFee({ ...editingFee, frequency: e.target.value })}
+                >
+                  <option value="Monthly" className="bg-slate-900">Monthly</option>
+                  <option value="Quarterly" className="bg-slate-900">Quarterly</option>
+                  <option value="Bi-Annual" className="bg-slate-900">Bi-Annual</option>
+                  <option value="One-Time" className="bg-slate-900">One-Time</option>
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Applicable Class</label>
+                <input
+                  type="text"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editingFee.class}
+                  onChange={(e) => setEditingFee({ ...editingFee, class: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800/40">
+              <button
+                type="button"
+                onClick={() => setEditingFee(null)}
+                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn-glow px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

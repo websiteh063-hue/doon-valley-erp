@@ -16,11 +16,14 @@ import {
   Bell,
   UserCircle,
   Contact,
-  UserPlus
+  UserPlus,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState({});
   const { user, academicSession } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,6 +32,13 @@ export default function DashboardLayout() {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
+  };
+
+  const toggleMenu = (name) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [name]: !prev[name]
+    }));
   };
 
   const getMenuItems = () => {
@@ -40,7 +50,14 @@ export default function DashboardLayout() {
         { name: 'Admission', path: '/admissions', icon: <UserPlus size={18} /> },
         { name: 'Student Info', path: '/students', icon: <Users size={18} /> },
         { name: 'Class & Section', path: '/classes-config', icon: <GraduationCap size={18} /> },
-        { name: 'Fee Management', path: '/fees-config', icon: <CreditCard size={18} /> },
+        {
+          name: 'Fee Management',
+          icon: <CreditCard size={18} />,
+          children: [
+            { name: 'Fee Structures', path: '/fees-config' },
+            { name: 'Collect Fee', path: '/collect-fees' }
+          ]
+        },
         { name: 'Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
         { name: 'HR Management', path: '/hr-categories', icon: <Contact size={18} /> },
         { name: 'Employee Management', path: '/employees', icon: <Users size={18} /> },
@@ -52,7 +69,14 @@ export default function DashboardLayout() {
         ...common,
         { name: 'Admission', path: '/admissions', icon: <UserPlus size={18} /> },
         { name: 'Student Info', path: '/students', icon: <Users size={18} /> },
-        { name: 'Fee Management', path: '/fees-config', icon: <CreditCard size={18} /> },
+        {
+          name: 'Fee Management',
+          icon: <CreditCard size={18} />,
+          children: [
+            { name: 'Fee Structures', path: '/fees-config' },
+            { name: 'Collect Fee', path: '/collect-fees' }
+          ]
+        },
         { name: 'Reports', path: '/reports', icon: <FileText size={18} /> }
       ];
     }
@@ -78,6 +102,53 @@ export default function DashboardLayout() {
 
   const renderNavItems = (items) => {
     return items.map((item) => {
+      const hasChildren = item.children && item.children.length > 0;
+      const isExpanded = !!expandedMenus[item.name];
+
+      if (hasChildren) {
+        return (
+          <div key={item.name} className="space-y-0.5">
+            <button
+              onClick={() => toggleMenu(item.name)}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[10.5px] font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-slate-500">{item.icon}</span>
+                <span>{item.name}</span>
+              </div>
+              <span className="text-slate-500">
+                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </span>
+            </button>
+            
+            {isExpanded && (
+              <div className="pl-4 border-l border-slate-800/60 ml-5 py-1 space-y-1">
+                {item.children.map((child) => {
+                  const isActive = location.pathname === child.path;
+                  return (
+                    <button
+                      key={child.name}
+                      onClick={() => {
+                        navigate(child.path);
+                        setSidebarOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-[9.5px] font-bold tracking-wide uppercase transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                        isActive
+                          ? 'text-white bg-indigo-600/25 border-l-2 border-indigo-500 pl-2'
+                          : 'text-slate-455 hover:text-slate-200 hover:bg-slate-855/20'
+                      }`}
+                    >
+                      <span className="text-slate-600 font-mono">»</span>
+                      {child.name}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      }
+
       const isActive = location.pathname === item.path;
       return (
         <button
