@@ -123,10 +123,11 @@ const admitStudent = async (req, res, next) => {
 // @access  Private (Super Admin, Principal, Office Admin, Teacher)
 const getStudents = async (req, res, next) => {
   try {
-    const { class: className, section } = req.query;
+    const { class: className, section, currentSession } = req.query;
     const filter = {};
     if (className) filter.class = className;
     if (section) filter.section = section;
+    if (currentSession) filter.currentSession = currentSession;
 
     const students = await Student.find(filter).populate('parent');
     res.status(200).json({ success: true, count: students.length, students });
@@ -155,14 +156,23 @@ const getStudentById = async (req, res, next) => {
 // @access  Private (Super Admin, Office Admin, Principal)
 const updateStudent = async (req, res, next) => {
   try {
-    const student = await Student.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const { parent: parentDetails, ...studentDetails } = req.body;
+
+    const student = await Student.findById(req.params.id);
     if (!student) {
       return res.status(404).json({ success: false, message: 'Student not found' });
     }
-    res.status(200).json({ success: true, message: 'Student profile updated successfully', student });
+
+    if (parentDetails && student.parent) {
+      await Parent.findByIdAndUpdate(student.parent, parentDetails, { new: true, runValidators: true });
+    }
+
+    const updatedStudent = await Student.findByIdAndUpdate(req.params.id, studentDetails, {
+      new: true,
+      runValidators: true,
+    }).populate('parent');
+
+    res.status(200).json({ success: true, message: 'Student profile updated successfully', student: updatedStudent });
   } catch (error) {
     next(error);
   }

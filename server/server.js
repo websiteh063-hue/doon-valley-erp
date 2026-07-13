@@ -12,6 +12,7 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 const homeworkRoutes = require('./routes/homeworkRoutes');
 const feeRoutes = require('./routes/feeRoutes');
 const examRoutes = require('./routes/examRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const errorHandler = require('./middleware/error');
 
 const app = express();
@@ -43,6 +44,7 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/homework', homeworkRoutes);
 app.use('/api/fees', feeRoutes);
 app.use('/api/exams', examRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check endpoint
 app.get('/api/status', (req, res) => {
