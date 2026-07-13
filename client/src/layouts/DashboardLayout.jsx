@@ -150,14 +150,7 @@ export default function DashboardLayout() {
             { name: 'Approve Leave', path: '/attendance' }
           ]
         },
-        {
-          name: 'H.W. / C.W.',
-          icon: <Edit3 size={18} />,
-          children: [
-            { name: 'Homework Board', path: '/homework' },
-            { name: 'Homework Submissions', path: '/homework' }
-          ]
-        },
+
         {
           name: 'Examinations',
           icon: <Calendar size={18} />,
@@ -169,14 +162,7 @@ export default function DashboardLayout() {
             { name: 'Design Admit Card', path: '/exams-config' }
           ]
         },
-        {
-          name: 'Online Exam',
-          icon: <Laptop size={18} />,
-          children: [
-            { name: 'Online Exam List', path: '/online-exams' },
-            { name: 'Question Bank', path: '/online-exams' }
-          ]
-        },
+
         {
           name: 'Question Paper',
           icon: <FileText size={18} />,
@@ -334,13 +320,7 @@ export default function DashboardLayout() {
             { name: 'Student Attendance', path: '/attendance' }
           ]
         },
-        {
-          name: 'H.W. / C.W.',
-          icon: <Edit3 size={18} />,
-          children: [
-            { name: 'Homework Board', path: '/homework' }
-          ]
-        },
+
         {
           name: 'Enter Marks',
           icon: <Calendar size={18} />,
@@ -367,13 +347,7 @@ export default function DashboardLayout() {
             { name: 'Attendance Journal', path: '/my-attendance' }
           ]
         },
-        {
-          name: 'My H.W. / C.W.',
-          icon: <Edit3 size={18} />,
-          children: [
-            { name: 'Coursework & Tasks', path: '/my-homework' }
-          ]
-        },
+
         {
           name: 'My Results',
           icon: <Calendar size={18} />,

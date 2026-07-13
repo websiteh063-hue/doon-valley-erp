@@ -76,7 +76,6 @@ export default function App() {
                 <Route path="/expense" element={<IncomeExpense />} />
                 
                 {/* E-Learning Routes */}
-                <Route path="/online-exams" element={<Elearning />} />
                 <Route path="/online-classes" element={<Elearning />} />
                 
                 {/* Academic Modules Routes */}
@@ -96,15 +95,12 @@ export default function App() {
                 
                 {/* Teacher / Class Teacher Routes */}
                 <Route path="/attendance" element={<Attendance />} />
-                <Route path="/homework" element={<Homework />} />
                 <Route path="/marks-entry" element={<MarksEntry />} />
                 
                 {/* Student / Parent Routes */}
                 <Route path="/my-attendance" element={<StudentAttendance />} />
-                <Route path="/my-homework" element={<StudentHomework />} />
                 <Route path="/my-results" element={<StudentResults />} />
                 <Route path="/child-attendance" element={<StudentAttendance />} />
-                <Route path="/child-homework" element={<StudentHomework />} />
                 <Route path="/fee-status" element={<StudentFees />} />
                 <Route path="/child-results" element={<StudentResults />} />
 
