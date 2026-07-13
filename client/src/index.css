@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --color-brand-50: hsl(225, 100%, 97%);
+  --color-brand-100: hsl(225, 100%, 94%);
+  --color-brand-500: hsl(224, 76%, 48%);
+  --color-brand-600: hsl(224, 76%, 40%);
+  --color-brand-700: hsl(224, 76%, 32%);
+  
+  --color-dark-50: #1e293b;
+  --color-dark-100: #0f172a;
+  --color-dark-200: #020617;
+  
+  --animate-gradient-shift: gradient-shift 8s ease infinite;
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+}
+
+/* Custom Base Styles */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-dark-200);
+  color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-dark-200);
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-500);
+}
+
+/* Premium Card / Glassmorphism Styles */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  transform: translateY(-4px);
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 12px 20px -10px rgba(99, 102, 241, 0.15);
+}
+
+/* Vibrant Gradients */
+.bg-gradient-mesh {
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+              var(--color-dark-200);
+  background-size: 200% 200%;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #c084fc 0%, #6366f1 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animated interactive glow */
+.glow-effect {
+  position: relative;
+}
+.glow-effect::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.glow-effect:hover::after {
+  opacity: 0.5;
+}
