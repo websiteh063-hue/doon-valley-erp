@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 @import "tailwindcss";
 
@@ -7,19 +7,29 @@
   
   --color-brand-50: hsl(225, 100%, 97%);
   --color-brand-100: hsl(225, 100%, 94%);
-  --color-brand-500: hsl(224, 76%, 48%);
-  --color-brand-600: hsl(224, 76%, 40%);
-  --color-brand-700: hsl(224, 76%, 32%);
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
   
   --color-dark-50: #1e293b;
   --color-dark-100: #0f172a;
   --color-dark-200: #020617;
   
-  --animate-gradient-shift: gradient-shift 8s ease infinite;
+  --animate-gradient-shift: gradient-shift 12s ease infinite;
+  --animate-float-slow: float-slow 15s ease-in-out infinite;
+  --animate-float-reverse: float-reverse 20s ease-in-out infinite;
   
   @keyframes gradient-shift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+  @keyframes float-reverse {
+    0%, 100% { transform: translateY(0) scale(1.05); }
+    50% { transform: translateY(20px) scale(0.95); }
   }
 }
 
@@ -41,7 +51,7 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   background: #334155;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-brand-500);
@@ -49,26 +59,65 @@ body {
 
 /* Premium Card / Glassmorphism Styles */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .glass-panel-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-panel-hover:hover {
-  transform: translateY(-4px);
-  background: rgba(15, 23, 42, 0.6);
+  transform: translateY(-5px);
+  background: rgba(15, 23, 42, 0.55);
   border-color: rgba(99, 102, 241, 0.25);
-  box-shadow: 0 12px 20px -10px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25);
 }
 
-/* Vibrant Gradients */
+/* Glowing Inputs */
+.premium-input {
+  background: rgba(2, 6, 23, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.premium-input:focus {
+  border-color: #6366f1;
+  background: rgba(2, 6, 23, 0.7);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Glowing buttons */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: 0.5s;
+}
+.btn-glow:hover::after {
+  left: 100%;
+}
+
+/* Dynamic Mesh Backgrounds */
 .bg-gradient-mesh {
-  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+              radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+              radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 40%),
               var(--color-dark-200);
   background-size: 200% 200%;
 }
@@ -85,20 +134,46 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* Animated interactive glow */
-.glow-effect {
-  position: relative;
+.text-gradient-neon {
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.glow-effect::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(135deg, #6366f1, #06b6d4);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+
+/* Interactive Sidebar Pill Indicators */
+.sidebar-link-active {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%);
+  border-left: 3px solid #6366f1;
+  color: #fff;
 }
-.glow-effect:hover::after {
-  opacity: 0.5;
+
+/* Soft Badge Colors */
+.badge-indigo {
+  background: rgba(99, 102, 241, 0.12);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.badge-cyan {
+  background: rgba(6, 182, 212, 0.12);
+  color: #67e8f9;
+  border: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde047;
+  border: 1px solid rgba(245, 158, 11, 0.15);
+}
+
+.badge-rose {
+  background: rgba(244, 63, 94, 0.12);
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.15);
 }

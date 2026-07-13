@@ -29,7 +29,6 @@ export default function DashboardLayout() {
     navigate('/login');
   };
 
-  // Define menu items by role
   const getMenuItems = () => {
     const common = [{ name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> }];
     
@@ -92,43 +91,45 @@ export default function DashboardLayout() {
   const menuItems = getMenuItems();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex relative font-sans">
       {/* Sidebar for Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-slate-900 border-r border-slate-800/80 p-5 relative shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-slate-900/60 backdrop-blur-md border-r border-slate-800/40 p-5 shrink-0 z-20">
         <div className="flex items-center gap-3 mb-8 px-2">
-          <div className="p-2 bg-gradient-to-tr from-indigo-600 to-cyan-500 rounded-xl">
-            <span className="text-xl font-black text-white">DV</span>
+          <div className="p-2.5 bg-gradient-to-tr from-indigo-600 to-cyan-500 rounded-2xl shadow-md shadow-indigo-500/10">
+            <span className="text-xl font-black text-white tracking-wider">DV</span>
           </div>
           <div>
-            <h2 className="font-extrabold text-sm tracking-tight text-white leading-none">Doon Valley</h2>
-            <span className="text-[10px] text-slate-400">High School ERP</span>
+            <h2 className="font-extrabold text-sm tracking-tight text-white leading-tight">Doon Valley</h2>
+            <span className="text-[10px] text-indigo-400 font-semibold tracking-wider uppercase">High School ERP</span>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1">
+        <nav className="flex-1 space-y-1.5">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <button
                 key={item.name}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 cursor-pointer ${
                   isActive
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/15'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    ? 'sidebar-link-active text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/30'
                 }`}
               >
-                {item.icon}
+                <span className={isActive ? 'text-indigo-400' : 'text-slate-500'}>
+                  {item.icon}
+                </span>
                 {item.name}
               </button>
             );
           })}
         </nav>
 
-        <div className="border-t border-slate-850 pt-4 mt-auto">
+        <div className="border-t border-slate-800/40 pt-4 mt-auto">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase text-rose-400 hover:bg-rose-500/10 transition-all duration-300 cursor-pointer"
           >
             <LogOut size={16} />
             Logout
@@ -138,8 +139,8 @@ export default function DashboardLayout() {
 
       {/* Sidebar Drawer for Mobile */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 md:hidden transition-opacity">
-          <aside className="w-64 bg-slate-900 h-full p-5 flex flex-col border-r border-slate-800">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 md:hidden transition-all">
+          <aside className="w-64 bg-slate-900 h-full p-5 flex flex-col border-r border-slate-800/50">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-gradient-to-tr from-indigo-600 to-cyan-500 rounded-xl">
@@ -147,7 +148,7 @@ export default function DashboardLayout() {
                 </div>
                 <h2 className="font-extrabold text-sm text-white">Doon Valley</h2>
               </div>
-              <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X size={20} />
               </button>
             </div>
@@ -162,10 +163,10 @@ export default function DashboardLayout() {
                       navigate(item.path);
                       setSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase transition-all ${
                       isActive
-                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                        ? 'sidebar-link-active text-white'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/55'
                     }`}
                   >
                     {item.icon}
@@ -177,7 +178,7 @@ export default function DashboardLayout() {
 
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10 transition-colors w-full mt-auto"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase text-rose-400 hover:bg-rose-500/10 transition-colors w-full mt-auto cursor-pointer"
             >
               <LogOut size={16} />
               Logout
@@ -189,35 +190,35 @@ export default function DashboardLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Navbar */}
-        <header className="h-16 border-b border-slate-900 bg-slate-950 flex items-center justify-between px-6 shrink-0 z-10">
-          <button onClick={() => setSidebarOpen(true)} className="md:hidden text-slate-400 hover:text-white">
+        <header className="h-16 border-b border-slate-900/60 bg-slate-950/40 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-10">
+          <button onClick={() => setSidebarOpen(true)} className="md:hidden text-slate-400 hover:text-white cursor-pointer">
             <Menu size={20} />
           </button>
 
           <div className="hidden md:block">
-            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
-              {user?.role} Workspace
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-900/40 px-3 py-1.5 rounded-full border border-slate-850">
+              {user?.role} Portal
             </span>
           </div>
 
           <div className="flex items-center gap-4 ml-auto">
-            <button className="p-2 text-slate-400 hover:text-white rounded-full bg-slate-900/50 hover:bg-slate-900 transition-colors relative">
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full"></span>
+            <button className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-900/30 border border-slate-850 hover:bg-slate-900 transition-colors relative cursor-pointer">
+              <Bell size={16} />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full"></span>
             </button>
 
-            <div className="h-8 w-px bg-slate-900"></div>
+            <div className="h-6 w-px bg-slate-800/40"></div>
 
             <div className="flex items-center gap-3">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-bold text-slate-200 leading-tight">
+                <p className="text-xs font-bold text-slate-200 leading-none">
                   {user?.username}
                 </p>
-                <span className="text-[10px] text-indigo-400 font-semibold uppercase">
+                <span className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider">
                   {user?.role}
                 </span>
               </div>
-              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold border border-slate-800 shadow">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold border border-slate-800 shadow">
                 <UserCircle size={18} />
               </div>
             </div>
@@ -225,7 +226,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page Content Viewport */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-950 bg-gradient-mesh bg-fixed">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-gradient-mesh bg-fixed">
           <Outlet />
         </main>
       </div>
