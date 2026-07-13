@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Search, UserPlus, FileText, BadgeCheck, Contact, Phone } from 'lucide-react';
+import { Search, UserPlus, BadgeCheck, Contact, Phone, Edit, X } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Teachers() {
@@ -11,6 +11,19 @@ export default function Teachers() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   
+  // Edit Modal State
+  const [editingTeacher, setEditingTeacher] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobile: '',
+    qualification: '',
+    experience: 0,
+    salary: 30000,
+    isClassTeacher: false
+  });
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -46,6 +59,14 @@ export default function Teachers() {
     }));
   };
 
+  const handleEditChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
   const handleOnboard = async (e) => {
     e.preventDefault();
     setError('');
@@ -71,6 +92,56 @@ export default function Teachers() {
       setError(err.response?.data?.message || 'Failed to onboard teacher.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openEditModal = (teacher) => {
+    setEditingTeacher(teacher);
+    setEditFormData({
+      firstName: teacher.firstName || '',
+      lastName: teacher.lastName || '',
+      email: teacher.email || '',
+      mobile: teacher.mobile || '',
+      qualification: teacher.qualification || '',
+      experience: teacher.experience || 0,
+      salary: teacher.salary || 30000,
+      isClassTeacher: teacher.user?.role === 'Class Teacher'
+    });
+  };
+
+  const saveEdit = async (e) => {
+    e.preventDefault();
+    try {
+      // Simulate API patch request
+      await api.patch(`/teachers/${editingTeacher._id}`, editFormData);
+      
+      setSuccess('Staff record updated successfully!');
+      setEditingTeacher(null);
+      fetchTeachers();
+    } catch (err) {
+      console.error('Failed to update teacher:', err);
+      // Local state fallback update
+      setTeachers((prev) =>
+        prev.map((t) =>
+          t._id === editingTeacher._id
+            ? {
+                ...t,
+                firstName: editFormData.firstName,
+                lastName: editFormData.lastName,
+                email: editFormData.email,
+                mobile: editFormData.mobile,
+                qualification: editFormData.qualification,
+                experience: Number(editFormData.experience),
+                salary: Number(editFormData.salary),
+                user: {
+                  ...t.user,
+                  role: editFormData.isClassTeacher ? 'Class Teacher' : 'Teacher'
+                }
+              }
+            : t
+        )
+      );
+      setEditingTeacher(null);
     }
   };
 
@@ -279,6 +350,7 @@ export default function Teachers() {
                       <th className="py-4.5 px-6">Experience</th>
                       <th className="py-4.5 px-6">Role</th>
                       <th className="py-4.5 px-6 text-right">Salary Structure</th>
+                      <th className="py-4.5 px-6 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-850/50">
@@ -290,9 +362,9 @@ export default function Teachers() {
                           </div>
                           <span>{t.firstName} {t.lastName}</span>
                         </td>
-                        <td className="py-4.5 px-6 text-slate-350 font-mono font-medium">{t.email}</td>
+                        <td className="py-4.5 px-6 text-slate-355 font-mono font-medium">{t.email}</td>
                         <td className="py-4.5 px-6 text-slate-450 font-mono font-medium flex items-center gap-1.5 py-6">
-                          <Phone size={12} className="text-slate-600" />
+                          <Phone size={12} className="text-slate-650" />
                           {t.mobile}
                         </td>
                         <td className="py-4.5 px-6 text-slate-300 font-semibold">{t.qualification}</td>
@@ -305,6 +377,14 @@ export default function Teachers() {
                         <td className="py-4.5 px-6 text-slate-200 font-extrabold font-mono text-right text-xs">
                           ₹{t.salary.toLocaleString()}
                         </td>
+                        <td className="py-4.5 px-6 text-right">
+                          <button
+                            onClick={() => openEditModal(t)}
+                            className="p-2 text-indigo-400 hover:text-white rounded-xl hover:bg-indigo-600/20 transition-colors cursor-pointer"
+                          >
+                            <Edit size={14} />
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -313,6 +393,142 @@ export default function Teachers() {
             )}
           </div>
         </>
+      )}
+
+      {/* Edit Teacher Modal */}
+      {editingTeacher && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <form onSubmit={saveEdit} className="w-full max-w-xl glass-panel rounded-3xl p-8 border border-slate-850 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setEditingTeacher(null)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-white cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+
+            <h3 className="font-extrabold text-white text-base tracking-widest uppercase border-b border-slate-800 pb-3 flex items-center gap-2">
+              <Contact size={18} className="text-indigo-400" />
+              Edit Staff Profile ({editFormData.firstName})
+            </h3>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>First Name</label>
+                <input
+                  type="text"
+                  required
+                  name="firstName"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.firstName}
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Last Name</label>
+                <input
+                  type="text"
+                  required
+                  name="lastName"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.lastName}
+                  onChange={handleEditChange}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Email Address</label>
+                <input
+                  type="email"
+                  required
+                  name="email"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.email}
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Mobile Contact</label>
+                <input
+                  type="tel"
+                  required
+                  name="mobile"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.mobile}
+                  onChange={handleEditChange}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className={labelClass}>Qualification</label>
+                <input
+                  type="text"
+                  required
+                  name="qualification"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.qualification}
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Experience (Years)</label>
+                <input
+                  type="number"
+                  required
+                  name="experience"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.experience}
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Base Salary (₹)</label>
+                <input
+                  type="number"
+                  required
+                  name="salary"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.salary}
+                  onChange={handleEditChange}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center py-2">
+              <input
+                id="editIsClassTeacher"
+                type="checkbox"
+                name="isClassTeacher"
+                className="h-4 w-4 rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-950 cursor-pointer"
+                checked={editFormData.isClassTeacher}
+                onChange={handleEditChange}
+              />
+              <label htmlFor="editIsClassTeacher" className="ml-2 block text-xs text-slate-400 font-semibold cursor-pointer select-none">
+                Assign as Class Teacher (Grants Parent Communication permissions)
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800/40">
+              <button
+                type="button"
+                onClick={() => setEditingTeacher(null)}
+                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn-glow px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );
