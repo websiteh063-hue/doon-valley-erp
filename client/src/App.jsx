@@ -11,26 +11,15 @@ import Dashboard from './pages/Dashboard';
 import DashboardLayout from './layouts/DashboardLayout';
 import Admissions from './pages/Admissions';
 import Students from './pages/Students';
-import Teachers from './pages/Teachers';
-import Users from './pages/Users';
+import ClassesConfig from './pages/ClassesConfig';
 import FeesConfig from './pages/FeesConfig';
-import ExamsConfig from './pages/ExamsConfig';
-import NotificationsPage from './pages/NotificationsPage';
-import FeesTracker from './pages/FeesTracker';
-import Exams from './pages/Exams';
-import CollectFees from './pages/CollectFees';
 import Attendance from './pages/Attendance';
-import Homework from './pages/Homework';
-import MarksEntry from './pages/MarksEntry';
-import FrontOffice from './pages/FrontOffice';
-import IncomeExpense from './pages/IncomeExpense';
-import Elearning from './pages/Elearning';
-import AcademicsModules from './pages/AcademicsModules';
-import ServicesAssets from './pages/ServicesAssets';
+import HrCategories from './pages/HrCategories';
+import Employees from './pages/Employees';
+import ReportsPage from './pages/ReportsPage';
 
 import {
   StudentAttendance,
-  StudentHomework,
   StudentResults,
   StudentFees
 } from './pages/StudentParentViews';
@@ -59,50 +48,17 @@ export default function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admissions" element={<Admissions />} />
                 <Route path="/students" element={<Students />} />
-                <Route path="/teachers" element={<Teachers />} />
-                <Route path="/users" element={<Users />} />
+                <Route path="/classes-config" element={<ClassesConfig />} />
                 <Route path="/fees-config" element={<FeesConfig />} />
-                <Route path="/exams-config" element={<ExamsConfig />} />
-                <Route path="/notifications" element={<NotificationsPage />} />
-                
-                {/* Principal / Operations Routes */}
-                <Route path="/fees-tracker" element={<FeesTracker />} />
-                <Route path="/exams" element={<Exams />} />
-                <Route path="/front-office" element={<FrontOffice />} />
-                <Route path="/collect-fees" element={<CollectFees />} />
-                
-                {/* Financial Ledger Routes */}
-                <Route path="/income" element={<IncomeExpense />} />
-                <Route path="/expense" element={<IncomeExpense />} />
-                
-                {/* E-Learning Routes */}
-                <Route path="/online-classes" element={<Elearning />} />
-                
-                {/* Academic Modules Routes */}
-                <Route path="/academics" element={<AcademicsModules />} />
-                <Route path="/question-papers" element={<AcademicsModules />} />
-                <Route path="/primary-evaluation" element={<AcademicsModules />} />
-                <Route path="/disciplinary" element={<AcademicsModules />} />
-                
-                {/* Services & Assets Routes */}
-                <Route path="/download-center" element={<ServicesAssets />} />
-                <Route path="/inventory" element={<ServicesAssets />} />
-                <Route path="/library" element={<ServicesAssets />} />
-                <Route path="/transport" element={<ServicesAssets />} />
-                <Route path="/hostel" element={<ServicesAssets />} />
-                <Route path="/certificates" element={<ServicesAssets />} />
-                <Route path="/consent-letters" element={<ServicesAssets />} />
-                
-                {/* Teacher / Class Teacher Routes */}
                 <Route path="/attendance" element={<Attendance />} />
-                <Route path="/marks-entry" element={<MarksEntry />} />
+                <Route path="/hr-categories" element={<HrCategories />} />
+                <Route path="/employees" element={<Employees />} />
+                <Route path="/reports" element={<ReportsPage />} />
                 
-                {/* Student / Parent Routes */}
+                {/* Student / Parent Portal Routes */}
                 <Route path="/my-attendance" element={<StudentAttendance />} />
                 <Route path="/my-results" element={<StudentResults />} />
-                <Route path="/child-attendance" element={<StudentAttendance />} />
                 <Route path="/fee-status" element={<StudentFees />} />
-                <Route path="/child-results" element={<StudentResults />} />
 
                 {/* Fallbacks */}
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />

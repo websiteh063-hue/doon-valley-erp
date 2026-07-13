@@ -15,31 +15,12 @@ import {
   CheckCircle,
   Bell,
   UserCircle,
-  Building,
-  TrendingUp,
-  TrendingDown,
-  Laptop,
-  Video,
-  Award,
-  AlertTriangle,
-  Download,
-  BookOpen,
-  Edit3,
-  MessageSquare,
   Contact,
-  Package,
-  Book,
-  Bus,
-  Home,
-  FileBadge,
-  Mail,
-  ChevronDown,
-  ChevronRight
+  UserPlus
 } from 'lucide-react';
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedMenus, setExpandedMenus] = useState({});
   const { user, academicSession } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,325 +31,44 @@ export default function DashboardLayout() {
     navigate('/login');
   };
 
-  const toggleMenu = (name) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [name]: !prev[name]
-    }));
-  };
-
   const getMenuItems = () => {
     const common = [{ name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> }];
     
     if (user?.role === 'Super Admin' || user?.role === 'Principal') {
       return [
         ...common,
-        {
-          name: 'Front Office',
-          icon: <Building size={18} />,
-          children: [
-            { name: 'Visitor Book', path: '/front-office' },
-            { name: 'Phone Call Log', path: '/front-office' },
-            { name: 'Admission Enquiry', path: '/front-office' }
-          ]
-        },
-        {
-          name: 'Student Info',
-          icon: <Users size={18} />,
-          children: [
-            { name: 'Student Details', path: '/students' },
-            { name: 'Student Admission', path: '/admissions' },
-            { name: 'Online Admission', path: '/admissions' },
-            { name: 'Disabled Students', path: '/students' },
-            { name: 'Multi Class Student', path: '/students' },
-            { name: 'Bulk Delete', path: '/students' }
-          ]
-        },
-        {
-          name: 'Human Resource',
-          icon: <Contact size={18} />,
-          children: [
-            { name: 'Staff Directory', path: '/teachers' },
-            { name: 'Staff Attendance', path: '/teachers' },
-            { name: 'Payroll List', path: '/teachers' },
-            { name: 'Apply Leave', path: '/teachers' }
-          ]
-        },
-        {
-          name: 'Academics',
-          icon: <GraduationCap size={18} />,
-          children: [
-            { name: 'Class Timetable', path: '/academics' },
-            { name: 'Assign Class Teacher', path: '/academics' },
-            { name: 'Promote Students', path: '/academics' },
-            { name: 'Subjects', path: '/academics' },
-            { name: 'Classes', path: '/academics' },
-            { name: 'Sections', path: '/academics' }
-          ]
-        },
-        {
-          name: 'Fees Collection',
-          icon: <CreditCard size={18} />,
-          children: [
-            { name: 'Collect Fee', path: '/collect-fees' },
-            { name: 'Payment Receipt', path: '/fee-status' },
-            { name: 'Online Admission Fee', path: '/collect-fees' },
-            { name: 'Demand Notice', path: '/collect-fees' },
-            { name: 'Fees Carry Forward', path: '/collect-fees' },
-            { name: 'Fee Discount', path: '/collect-fees' },
-            { name: 'Fee Master', path: '/fees-config' },
-            { name: 'Fees Group', path: '/fees-config' },
-            { name: 'Fees Types', path: '/fees-config' },
-            { name: 'Fee Follow Up', path: '/collect-fees' },
-            { name: 'Fees Reports', path: '/fees-tracker' }
-          ]
-        },
-        {
-          name: 'Income',
-          icon: <TrendingUp size={18} />,
-          children: [
-            { name: 'Add Income', path: '/income' },
-            { name: 'Search Income', path: '/income' },
-            { name: 'Income Head', path: '/income' }
-          ]
-        },
-        {
-          name: 'Expense',
-          icon: <TrendingDown size={18} />,
-          children: [
-            { name: 'Add Expense', path: '/expense' },
-            { name: 'Search Expense', path: '/expense' },
-            { name: 'Expense Head', path: '/expense' }
-          ]
-        },
-        {
-          name: 'Attendance',
-          icon: <CheckCircle size={18} />,
-          children: [
-            { name: 'Student Attendance', path: '/attendance' },
-            { name: 'Attendance By Date', path: '/attendance' },
-            { name: 'Approve Leave', path: '/attendance' }
-          ]
-        },
-
-        {
-          name: 'Examinations',
-          icon: <Calendar size={18} />,
-          children: [
-            { name: 'Exam Group', path: '/exams' },
-            { name: 'Exam Schedule', path: '/exams-config' },
-            { name: 'Exam Results', path: '/exams' },
-            { name: 'Design Marksheet', path: '/exams-config' },
-            { name: 'Design Admit Card', path: '/exams-config' }
-          ]
-        },
-
-        {
-          name: 'Question Paper',
-          icon: <FileText size={18} />,
-          children: [
-            { name: 'Question Paper List', path: '/question-papers' },
-            { name: 'Print Blueprint', path: '/question-papers' }
-          ]
-        },
-        {
-          name: 'Primary Evaluation',
-          icon: <Award size={18} />,
-          children: [
-            { name: 'Assessment Criteria', path: '/primary-evaluation' },
-            { name: 'Rubrics Setup', path: '/primary-evaluation' }
-          ]
-        },
-        {
-          name: 'Online Class',
-          icon: <Video size={18} />,
-          children: [
-            { name: 'Live Class List', path: '/online-classes' },
-            { name: 'Live Meeting Log', path: '/online-classes' }
-          ]
-        },
-        {
-          name: 'Communicate',
-          icon: <MessageSquare size={18} />,
-          children: [
-            { name: 'Send SMS / Email', path: '/notifications' },
-            { name: 'Notice Board', path: '/notifications' },
-            { name: 'Email / SMS Log', path: '/notifications' }
-          ]
-        },
-        {
-          name: 'Digital Notice Board',
-          icon: <Bell size={18} />,
-          children: [
-            { name: 'Active Notices', path: '/notifications' },
-            { name: 'Post Bulletin', path: '/notifications' }
-          ]
-        },
-        {
-          name: 'Consent Letter',
-          icon: <Mail size={18} />,
-          children: [
-            { name: 'Dispatch Consent', path: '/consent-letters' },
-            { name: 'Consent Status', path: '/consent-letters' }
-          ]
-        },
-        {
-          name: 'Library',
-          icon: <Book size={18} />,
-          children: [
-            { name: 'Book List', path: '/library' },
-            { name: 'Issue Return', path: '/library' },
-            { name: 'Student Members', path: '/library' }
-          ]
-        },
-        {
-          name: 'Inventory',
-          icon: <Package size={18} />,
-          children: [
-            { name: 'Issue Item', path: '/inventory' },
-            { name: 'Item Stock', path: '/inventory' },
-            { name: 'Item Category', path: '/inventory' }
-          ]
-        },
-        {
-          name: 'Transport',
-          icon: <Bus size={18} />,
-          children: [
-            { name: 'Route List', path: '/transport' },
-            { name: 'Bus Allocations', path: '/transport' }
-          ]
-        },
-        {
-          name: 'Hostel',
-          icon: <Home size={18} />,
-          children: [
-            { name: 'Room List', path: '/hostel' },
-            { name: 'Room Type', path: '/hostel' },
-            { name: 'Hostel List', path: '/hostel' }
-          ]
-        },
-        {
-          name: 'Disciplinary',
-          icon: <AlertTriangle size={18} />,
-          children: [
-            { name: 'Incidents Log', path: '/disciplinary' },
-            { name: 'Demerits Tracker', path: '/disciplinary' }
-          ]
-        },
-        {
-          name: 'Download Center',
-          icon: <Download size={18} />,
-          children: [
-            { name: 'Upload Content', path: '/download-center' },
-            { name: 'Assignment Download', path: '/download-center' },
-            { name: 'Study Material', path: '/download-center' },
-            { name: 'Syllabus', path: '/download-center' },
-            { name: 'Other Downloads', path: '/download-center' }
-          ]
-        },
-        {
-          name: 'Certificate',
-          icon: <FileBadge size={18} />,
-          children: [
-            { name: 'Student Certificate', path: '/certificates' },
-            { name: 'Generate Certificate', path: '/certificates' }
-          ]
-        }
+        { name: 'Admission', path: '/admissions', icon: <UserPlus size={18} /> },
+        { name: 'Student Info', path: '/students', icon: <Users size={18} /> },
+        { name: 'Class & Section', path: '/classes-config', icon: <GraduationCap size={18} /> },
+        { name: 'Fee Management', path: '/fees-config', icon: <CreditCard size={18} /> },
+        { name: 'Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
+        { name: 'HR Management', path: '/hr-categories', icon: <Contact size={18} /> },
+        { name: 'Employee Management', path: '/employees', icon: <Users size={18} /> },
+        { name: 'Reports', path: '/reports', icon: <FileText size={18} /> }
       ];
     }
     if (user?.role === 'Office Admin') {
       return [
         ...common,
-        {
-          name: 'Front Office',
-          icon: <Building size={18} />,
-          children: [
-            { name: 'Visitor Book', path: '/front-office' },
-            { name: 'Phone Call Log', path: '/front-office' }
-          ]
-        },
-        {
-          name: 'Student Directory',
-          icon: <Users size={18} />,
-          children: [
-            { name: 'Student Details', path: '/students' }
-          ]
-        },
-        {
-          name: 'Collect Fees',
-          icon: <CreditCard size={18} />,
-          children: [
-            { name: 'Collect Fee', path: '/collect-fees' }
-          ]
-        },
-        {
-          name: 'Download Center',
-          icon: <Download size={18} />,
-          children: [
-            { name: 'Assignment Download', path: '/download-center' }
-          ]
-        }
+        { name: 'Admission', path: '/admissions', icon: <UserPlus size={18} /> },
+        { name: 'Student Info', path: '/students', icon: <Users size={18} /> },
+        { name: 'Fee Management', path: '/fees-config', icon: <CreditCard size={18} /> },
+        { name: 'Reports', path: '/reports', icon: <FileText size={18} /> }
       ];
     }
     if (user?.role === 'Teacher' || user?.role === 'Class Teacher') {
       return [
         ...common,
-        {
-          name: 'Attendance',
-          icon: <CheckCircle size={18} />,
-          children: [
-            { name: 'Student Attendance', path: '/attendance' }
-          ]
-        },
-
-        {
-          name: 'Enter Marks',
-          icon: <Calendar size={18} />,
-          children: [
-            { name: 'Class Marks Sheet', path: '/marks-entry' }
-          ]
-        },
-        {
-          name: 'Digital Notice Board',
-          icon: <Bell size={18} />,
-          children: [
-            { name: 'Active Notices', path: '/notifications' }
-          ]
-        }
+        { name: 'Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
+        { name: 'Reports', path: '/reports', icon: <FileText size={18} /> }
       ];
     }
     if (user?.role === 'Student' || user?.role === 'Parent') {
       return [
         ...common,
-        {
-          name: 'My Attendance',
-          icon: <CheckCircle size={18} />,
-          children: [
-            { name: 'Attendance Journal', path: '/my-attendance' }
-          ]
-        },
-
-        {
-          name: 'My Results',
-          icon: <Calendar size={18} />,
-          children: [
-            { name: 'Academic Report Card', path: '/my-results' }
-          ]
-        },
-        {
-          name: 'Fee Status',
-          icon: <CreditCard size={18} />,
-          children: [
-            { name: 'Billing & Accounts', path: '/fee-status' }
-          ]
-        },
-        {
-          name: 'Notice Board',
-          icon: <Bell size={18} />,
-          children: [
-            { name: 'Active Notices', path: '/notifications' }
-          ]
-        }
+        { name: 'My Attendance', path: '/my-attendance', icon: <CheckCircle size={18} /> },
+        { name: 'My Results', path: '/my-results', icon: <Calendar size={18} /> },
+        { name: 'Fee Status', path: '/fee-status', icon: <CreditCard size={18} /> }
       ];
     }
     return common;
@@ -378,53 +78,6 @@ export default function DashboardLayout() {
 
   const renderNavItems = (items) => {
     return items.map((item) => {
-      const hasChildren = item.children && item.children.length > 0;
-      const isExpanded = !!expandedMenus[item.name];
-
-      if (hasChildren) {
-        return (
-          <div key={item.name} className="space-y-0.5">
-            <button
-              onClick={() => toggleMenu(item.name)}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[10.5px] font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-slate-500">{item.icon}</span>
-                <span>{item.name}</span>
-              </div>
-              <span className="text-slate-500">
-                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </span>
-            </button>
-            
-            {isExpanded && (
-              <div className="pl-4 border-l border-slate-800/60 ml-5 py-1 space-y-1">
-                {item.children.map((child) => {
-                  const isActive = location.pathname === child.path;
-                  return (
-                    <button
-                      key={child.name}
-                      onClick={() => {
-                        navigate(child.path);
-                        setSidebarOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-[9.5px] font-bold tracking-wide uppercase transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
-                        isActive
-                          ? 'text-white bg-indigo-600/25 border-l-2 border-indigo-500 pl-2'
-                          : 'text-slate-450 hover:text-slate-200 hover:bg-slate-850/20'
-                      }`}
-                    >
-                      <span className="text-slate-600 font-mono">»</span>
-                      {child.name}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        );
-      }
-
       const isActive = location.pathname === item.path;
       return (
         <button
