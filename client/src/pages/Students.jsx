@@ -75,8 +75,8 @@ export default function Students() {
   const saveEdit = async (e) => {
     e.preventDefault();
     try {
-      // Simulate API or patch request
-      await api.patch(`/students/${editingStudent._id}`, editFormData);
+      // Simulate API or put request
+      await api.put(`/students/${editingStudent._id}`, editFormData);
       
       // Update local state
       setStudents((prev) =>
