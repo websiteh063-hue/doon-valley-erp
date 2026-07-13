@@ -81,7 +81,6 @@ export default function App() {
                 
                 {/* Academic Modules Routes */}
                 <Route path="/academics" element={<AcademicsModules />} />
-                <Route path="/lesson-planner" element={<AcademicsModules />} />
                 <Route path="/question-papers" element={<AcademicsModules />} />
                 <Route path="/primary-evaluation" element={<AcademicsModules />} />
                 <Route path="/disciplinary" element={<AcademicsModules />} />

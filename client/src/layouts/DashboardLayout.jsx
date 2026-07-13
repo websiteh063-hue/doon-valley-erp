@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../redux/authSlice';
+import { logout, setAcademicSession } from '../redux/authSlice';
 import {
   Menu,
   X,
@@ -40,7 +40,7 @@ import {
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState({});
-  const { user } = useSelector((state) => state.auth);
+  const { user, academicSession } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -104,14 +104,6 @@ export default function DashboardLayout() {
             { name: 'Subjects', path: '/academics' },
             { name: 'Classes', path: '/academics' },
             { name: 'Sections', path: '/academics' }
-          ]
-        },
-        {
-          name: 'Lesson Planner',
-          icon: <BookOpen size={18} />,
-          children: [
-            { name: 'Manage Lesson Plan', path: '/lesson-planner' },
-            { name: 'Lesson Plan Status', path: '/lesson-planner' }
           ]
         },
         {
@@ -550,10 +542,21 @@ export default function DashboardLayout() {
             <Menu size={20} />
           </button>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-2">
             <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-900/40 px-3 py-1.5 rounded-full border border-slate-850">
               {user?.role} Portal
             </span>
+            <div className="flex items-center gap-1.5 bg-slate-900/40 border border-slate-850 rounded-full px-3.5 py-1">
+              <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider">Session:</span>
+              <select
+                value={academicSession}
+                onChange={(e) => dispatch(setAcademicSession(e.target.value))}
+                className="bg-transparent text-[10px] font-bold text-indigo-400 focus:outline-none cursor-pointer uppercase tracking-wider border-none p-0 select-none"
+              >
+                <option value="2026-2027" className="bg-slate-900 text-slate-200">2026-2027</option>
+                <option value="2027-2028" className="bg-slate-900 text-slate-200">2027-2028</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 ml-auto">

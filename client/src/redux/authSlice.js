@@ -6,6 +6,7 @@ const initialState = {
   user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
   profile: localStorage.getItem('profile') ? JSON.parse(localStorage.getItem('profile')) : null,
   isAuthenticated: !!localStorage.getItem('token'),
+  academicSession: localStorage.getItem('academicSession') || '2026-2027',
 };
 
 const authSlice = createSlice({
@@ -48,9 +49,13 @@ const authSlice = createSlice({
     updateProfile(state, action) {
       state.profile = { ...state.profile, ...action.payload };
       localStorage.setItem('profile', JSON.stringify(state.profile));
+    },
+    setAcademicSession(state, action) {
+      state.academicSession = action.payload;
+      localStorage.setItem('academicSession', action.payload);
     }
   },
 });
 
-export const { setCredentials, logout, updateUser, updateProfile } = authSlice.actions;
+export const { setCredentials, logout, updateUser, updateProfile, setAcademicSession } = authSlice.actions;
 export default authSlice.reducer;

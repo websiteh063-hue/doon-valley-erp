@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
 import { CheckCircle, ClipboardList, UserCheck, MapPin } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Admissions() {
+  const { academicSession } = useSelector((state) => state.auth);
+  
   const [formData, setFormData] = useState({
     admissionNo: '',
     rollNo: '',
@@ -20,7 +23,7 @@ export default function Admissions() {
     address: { street: '', city: '', state: '', zip: '' },
     class: 'Class I',
     section: 'A',
-    currentSession: '2026-2027',
+    currentSession: academicSession || '2026-2027',
     parentDetails: {
       fatherName: '',
       fatherOccupation: '',

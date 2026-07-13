@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
 import { Search, Sliders, User, Edit, X } from 'lucide-react';
 
 export default function Students() {
+  const { academicSession } = useSelector((state) => state.auth);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ class: '', section: '' });
@@ -21,7 +23,7 @@ export default function Students() {
 
   useEffect(() => {
     fetchStudents();
-  }, [filters]);
+  }, [filters, academicSession]);
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -29,6 +31,7 @@ export default function Students() {
       const queryParams = new URLSearchParams();
       if (filters.class) queryParams.append('class', filters.class);
       if (filters.section) queryParams.append('section', filters.section);
+      queryParams.append('currentSession', academicSession);
 
       const response = await api.get(`/students?${queryParams.toString()}`);
       setStudents(response.data.students || []);
