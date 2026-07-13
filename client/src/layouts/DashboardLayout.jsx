@@ -14,7 +14,25 @@ import {
   Calendar,
   CheckCircle,
   Bell,
-  UserCircle
+  UserCircle,
+  Building,
+  TrendingUp,
+  TrendingDown,
+  Laptop,
+  Video,
+  Award,
+  AlertTriangle,
+  Download,
+  BookOpen,
+  Edit3,
+  MessageSquare,
+  Contact,
+  Package,
+  Book,
+  Bus,
+  Home,
+  FileBadge,
+  Mail
 } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -32,57 +50,62 @@ export default function DashboardLayout() {
   const getMenuItems = () => {
     const common = [{ name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> }];
     
-    if (user?.role === 'Super Admin') {
+    if (user?.role === 'Super Admin' || user?.role === 'Principal') {
       return [
         ...common,
-        { name: 'Admissions', path: '/admissions', icon: <GraduationCap size={18} /> },
-        { name: 'User Management', path: '/users', icon: <Users size={18} /> },
-        { name: 'Fees Config', path: '/fees-config', icon: <CreditCard size={18} /> },
-        { name: 'Exams Config', path: '/exams-config', icon: <Calendar size={18} /> },
-        { name: 'Notifications', path: '/notifications', icon: <Bell size={18} /> },
-      ];
-    }
-    if (user?.role === 'Principal') {
-      return [
-        ...common,
-        { name: 'Student Directory', path: '/students', icon: <Users size={18} /> },
-        { name: 'Teachers Directory', path: '/teachers', icon: <Users size={18} /> },
-        { name: 'Fees Tracker', path: '/fees-tracker', icon: <CreditCard size={18} /> },
-        { name: 'Exams', path: '/exams', icon: <Calendar size={18} /> },
-        { name: 'Notifications', path: '/notifications', icon: <Bell size={18} /> },
+        { name: 'Front Office', path: '/front-office', icon: <Building size={18} /> },
+        { name: 'Student Info', path: '/students', icon: <Users size={18} /> },
+        { name: 'Human Resource', path: '/teachers', icon: <Contact size={18} /> },
+        { name: 'Academics', path: '/academics', icon: <GraduationCap size={18} /> },
+        { name: 'Lesson Planner', path: '/lesson-planner', icon: <BookOpen size={18} /> },
+        { name: 'Fees Collection', path: '/collect-fees', icon: <CreditCard size={18} /> },
+        { name: 'Income', path: '/income', icon: <TrendingUp size={18} /> },
+        { name: 'Expense', path: '/expense', icon: <TrendingDown size={18} /> },
+        { name: 'Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
+        { name: 'H.W. / C.W.', path: '/homework', icon: <Edit3 size={18} /> },
+        { name: 'Examinations', path: '/exams', icon: <Calendar size={18} /> },
+        { name: 'Online Exam', path: '/online-exams', icon: <Laptop size={18} /> },
+        { name: 'Question Paper', path: '/question-papers', icon: <FileText size={18} /> },
+        { name: 'Primary Evaluation', path: '/primary-evaluation', icon: <Award size={18} /> },
+        { name: 'Online Class', path: '/online-classes', icon: <Video size={18} /> },
+        { name: 'Communicate', path: '/communicate', icon: <MessageSquare size={18} /> },
+        { name: 'Digital Notice Board', path: '/notifications', icon: <Bell size={18} /> },
+        { name: 'Consent Letter', path: '/consent-letters', icon: <Mail size={18} /> },
+        { name: 'Library', path: '/library', icon: <Book size={18} /> },
+        { name: 'Inventory', path: '/inventory', icon: <Package size={18} /> },
+        { name: 'Transport', path: '/transport', icon: <Bus size={18} /> },
+        { name: 'Hostel', path: '/hostel', icon: <Home size={18} /> },
+        { name: 'Disciplinary', path: '/disciplinary', icon: <AlertTriangle size={18} /> },
+        { name: 'Download Center', path: '/download-center', icon: <Download size={18} /> },
+        { name: 'Certificate', path: '/certificates', icon: <FileBadge size={18} /> }
       ];
     }
     if (user?.role === 'Office Admin') {
       return [
         ...common,
-        { name: 'Admissions Form', path: '/admissions', icon: <GraduationCap size={18} /> },
+        { name: 'Front Office', path: '/front-office', icon: <Building size={18} /> },
         { name: 'Student Directory', path: '/students', icon: <Users size={18} /> },
         { name: 'Collect Fees', path: '/collect-fees', icon: <CreditCard size={18} /> },
+        { name: 'Download Center', path: '/download-center', icon: <Download size={18} /> }
       ];
     }
     if (user?.role === 'Teacher' || user?.role === 'Class Teacher') {
       return [
         ...common,
         { name: 'Mark Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
-        { name: 'Homework Board', path: '/homework', icon: <FileText size={18} /> },
+        { name: 'H.W. / C.W.', path: '/homework', icon: <Edit3 size={18} /> },
         { name: 'Enter Marks', path: '/marks-entry', icon: <Calendar size={18} /> },
+        { name: 'Digital Notice Board', path: '/notifications', icon: <Bell size={18} /> }
       ];
     }
-    if (user?.role === 'Student') {
+    if (user?.role === 'Student' || user?.role === 'Parent') {
       return [
         ...common,
         { name: 'My Attendance', path: '/my-attendance', icon: <CheckCircle size={18} /> },
-        { name: 'My Homework', path: '/my-homework', icon: <FileText size={18} /> },
+        { name: 'My H.W. / C.W.', path: '/my-homework', icon: <Edit3 size={18} /> },
         { name: 'My Results', path: '/my-results', icon: <Calendar size={18} /> },
-      ];
-    }
-    if (user?.role === 'Parent') {
-      return [
-        ...common,
-        { name: 'Child Attendance', path: '/child-attendance', icon: <CheckCircle size={18} /> },
-        { name: 'Child Homework', path: '/child-homework', icon: <FileText size={18} /> },
         { name: 'Fee Status', path: '/fee-status', icon: <CreditCard size={18} /> },
-        { name: 'Child Results', path: '/child-results', icon: <Calendar size={18} /> },
+        { name: 'Digital Notice Board', path: '/notifications', icon: <Bell size={18} /> }
       ];
     }
     return common;
@@ -93,8 +116,8 @@ export default function DashboardLayout() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex relative font-sans">
       {/* Sidebar for Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-slate-900/60 backdrop-blur-md border-r border-slate-800/40 p-5 shrink-0 z-20">
-        <div className="flex items-center gap-3 mb-8 px-2">
+      <aside className="hidden md:flex flex-col w-64 bg-slate-900/60 backdrop-blur-md border-r border-slate-800/40 p-5 shrink-0 z-20 h-screen">
+        <div className="flex items-center gap-3 mb-6 px-2 shrink-0">
           <div className="p-2.5 bg-gradient-to-tr from-indigo-600 to-cyan-500 rounded-2xl shadow-md shadow-indigo-500/10">
             <span className="text-xl font-black text-white tracking-wider">DV</span>
           </div>
@@ -104,14 +127,14 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1.5">
+        <nav className="flex-1 space-y-1 overflow-y-auto pr-1.5 scrollbar-thin">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <button
                 key={item.name}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer ${
                   isActive
                     ? 'sidebar-link-active text-white'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/30'
@@ -126,7 +149,7 @@ export default function DashboardLayout() {
           })}
         </nav>
 
-        <div className="border-t border-slate-800/40 pt-4 mt-auto">
+        <div className="border-t border-slate-800/40 pt-4 mt-auto shrink-0">
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase text-rose-400 hover:bg-rose-500/10 transition-all duration-300 cursor-pointer"
@@ -141,7 +164,7 @@ export default function DashboardLayout() {
       {sidebarOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 md:hidden transition-all">
           <aside className="w-64 bg-slate-900 h-full p-5 flex flex-col border-r border-slate-800/50">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-gradient-to-tr from-indigo-600 to-cyan-500 rounded-xl">
                   <span className="text-lg font-black text-white">DV</span>
@@ -153,7 +176,7 @@ export default function DashboardLayout() {
               </button>
             </div>
 
-            <nav className="flex-1 space-y-1">
+            <nav className="flex-1 space-y-1 overflow-y-auto pr-1">
               {menuItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
@@ -163,7 +186,7 @@ export default function DashboardLayout() {
                       navigate(item.path);
                       setSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide uppercase transition-all ${
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] font-bold tracking-wider uppercase transition-all ${
                       isActive
                         ? 'sidebar-link-active text-white'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/55'

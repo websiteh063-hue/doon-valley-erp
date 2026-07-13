@@ -22,6 +22,12 @@ import CollectFees from './pages/CollectFees';
 import Attendance from './pages/Attendance';
 import Homework from './pages/Homework';
 import MarksEntry from './pages/MarksEntry';
+import FrontOffice from './pages/FrontOffice';
+import IncomeExpense from './pages/IncomeExpense';
+import Elearning from './pages/Elearning';
+import AcademicsModules from './pages/AcademicsModules';
+import ServicesAssets from './pages/ServicesAssets';
+
 import {
   StudentAttendance,
   StudentHomework,
@@ -59,12 +65,35 @@ export default function App() {
                 <Route path="/exams-config" element={<ExamsConfig />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 
-                {/* Principal Routes */}
+                {/* Principal / Operations Routes */}
                 <Route path="/fees-tracker" element={<FeesTracker />} />
                 <Route path="/exams" element={<Exams />} />
-                
-                {/* Office Admin Routes */}
+                <Route path="/front-office" element={<FrontOffice />} />
                 <Route path="/collect-fees" element={<CollectFees />} />
+                
+                {/* Financial Ledger Routes */}
+                <Route path="/income" element={<IncomeExpense />} />
+                <Route path="/expense" element={<IncomeExpense />} />
+                
+                {/* E-Learning Routes */}
+                <Route path="/online-exams" element={<Elearning />} />
+                <Route path="/online-classes" element={<Elearning />} />
+                
+                {/* Academic Modules Routes */}
+                <Route path="/academics" element={<AcademicsModules />} />
+                <Route path="/lesson-planner" element={<AcademicsModules />} />
+                <Route path="/question-papers" element={<AcademicsModules />} />
+                <Route path="/primary-evaluation" element={<AcademicsModules />} />
+                <Route path="/disciplinary" element={<AcademicsModules />} />
+                
+                {/* Services & Assets Routes */}
+                <Route path="/download-center" element={<ServicesAssets />} />
+                <Route path="/inventory" element={<ServicesAssets />} />
+                <Route path="/library" element={<ServicesAssets />} />
+                <Route path="/transport" element={<ServicesAssets />} />
+                <Route path="/hostel" element={<ServicesAssets />} />
+                <Route path="/certificates" element={<ServicesAssets />} />
+                <Route path="/consent-letters" element={<ServicesAssets />} />
                 
                 {/* Teacher / Class Teacher Routes */}
                 <Route path="/attendance" element={<Attendance />} />
