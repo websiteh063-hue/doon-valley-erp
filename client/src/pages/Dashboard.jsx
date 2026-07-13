@@ -34,33 +34,17 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In production, we'd query real aggregation endpoints based on role.
-    // For demo/prototype and reliable loading, we provide gorgeous mock dashboards
-    // prepopulated with custom metrics that match the specifications.
-    const timer = setTimeout(() => {
-      setStats({
-        totalStudents: 1250,
-        totalTeachers: 78,
-        todayAttendance: '94.2%',
-        feeCollected: '₹14.2L',
-        pendingFees: '₹2.8L',
-        birthdays: [
-          { name: 'Aarav Sharma', class: 'Class VI-A' },
-          { name: 'Priya Verma', class: 'Class IX-B' }
-        ],
-        holidays: [
-          { name: 'Independence Day', date: '15 Aug 2026' },
-          { name: 'Raksha Bandhan', date: '28 Aug 2026' }
-        ],
-        recentAlerts: [
-          { title: 'Fee Reminder', body: 'Q2 Tuition Fees due by August 10th.', time: '2 hours ago' },
-          { title: 'Unit Test Results', body: 'UT-1 Reports are now available.', time: '1 day ago' }
-        ]
-      });
-      setLoading(false);
-    }, 800);
-
-    return () => clearTimeout(timer);
+    const fetchStats = async () => {
+      try {
+        const response = await api.get('/dashboard/stats');
+        setStats(response.data.stats);
+      } catch (err) {
+        console.error('Failed to load dashboard stats:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
   }, []);
 
   if (loading) {
