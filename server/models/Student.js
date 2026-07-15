@@ -99,4 +99,6 @@ const studentSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+studentSchema.index({ class: 1, section: 1, currentSession: 1 });
+
 module.exports = mongoose.model('Student', studentSchema);
