@@ -126,9 +126,9 @@ const admitStudent = async (req, res, next) => {
       medicalHistory,
       previousSchool,
       address,
-      class: className,
-      section,
-      currentSession
+      class: className ? className.trim() : '',
+      section: section ? section.trim() : '',
+      currentSession: currentSession ? currentSession.trim() : ''
     });
     const savedStudent = await studentDoc.save();
 
@@ -153,9 +153,15 @@ const getStudents = async (req, res, next) => {
   try {
     const { class: className, section, currentSession } = req.query;
     const filter = {};
-    if (className) filter.class = className;
-    if (section) filter.section = section;
-    if (currentSession) filter.currentSession = currentSession;
+    if (className) {
+      filter.class = { $regex: new RegExp(`^\\s*${className.trim()}\\s*$`, 'i') };
+    }
+    if (section) {
+      filter.section = { $regex: new RegExp(`^\\s*${section.trim()}\\s*$`, 'i') };
+    }
+    if (currentSession) {
+      filter.currentSession = { $regex: new RegExp(`^\\s*${currentSession.trim()}\\s*$`, 'i') };
+    }
 
     const students = await Student.find(filter).populate('parent');
     res.status(200).json({ success: true, count: students.length, students });
@@ -344,9 +350,9 @@ const bulkImportStudents = async (req, res, next) => {
           lastName,
           dob: dob ? new Date(dob) : new Date(),
           gender: gender || 'Male',
-          class: className,
-          section,
-          currentSession: currentSession || '2026-2027'
+          class: className ? className.trim() : '',
+          section: section ? section.trim() : '',
+          currentSession: currentSession ? currentSession.trim() : '2026-2027'
         });
         const savedStudent = await studentDoc.save();
 

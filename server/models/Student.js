@@ -91,14 +91,17 @@ const studentSchema = new mongoose.Schema({
   currentSession: {
     type: String,
     required: true,
+    trim: true,
   },
   class: {
     type: String, // String representation or Class ref
     required: true,
+    trim: true,
   },
   section: {
     type: String, // String representation or Section ref
     required: true,
+    trim: true,
   },
 }, {
   timestamps: true,
