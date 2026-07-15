@@ -108,8 +108,8 @@ export default function Students() {
   };
 
   const downloadCSVTemplate = () => {
-    const headers = "admissionNo,rollNo,penNo,firstName,lastName,dob,gender,class,section,currentSession,fatherName,fatherAadhaar,motherName,motherAadhaar,mobile,email\n";
-    const sampleRow = "DVHS2026101,15,PEN9876543,Rahul,Kumar,2015-05-12,Male,Class I,A,2026-2027,Suresh Kumar,123456789012,Sunita Devi,9876543210,suresh@gmail.com\n";
+    const headers = "admissionNo,rollNo,penNo,studentName,dob,gender,class,section,currentSession,fatherName,fatherAadhaar,motherName,motherAadhaar,mobile,email\n";
+    const sampleRow = "DVHS2026101,15,PEN9876543,Rahul Kumar,2015-05-12,Male,Class I,A,2026-2027,Suresh Kumar,123456789012,Sunita Devi,9876543210,suresh@gmail.com\n";
     
     const blob = new Blob([headers + sampleRow], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -127,7 +127,7 @@ export default function Students() {
       alert("No student data available to export.");
       return;
     }
-    const headers = "admissionNo,rollNo,penNo,firstName,lastName,dob,gender,class,section,fatherName,fatherAadhaar,motherName,motherAadhaar,mobile,email\n";
+    const headers = "admissionNo,rollNo,penNo,studentName,dob,gender,class,section,fatherName,fatherAadhaar,motherName,motherAadhaar,mobile,email\n";
     
     const rows = students.map((s) => {
       return [
@@ -135,7 +135,6 @@ export default function Students() {
         s.rollNo || '',
         s.penNo || '',
         s.firstName,
-        s.lastName,
         s.dob ? s.dob.split('T')[0] : '',
         s.gender,
         s.class,
@@ -188,7 +187,11 @@ export default function Students() {
           
           const studentObj = {};
           headers.forEach((header, index) => {
-            studentObj[header] = cells[index];
+            if (header === 'studentName') {
+              studentObj['firstName'] = cells[index];
+            } else {
+              studentObj[header] = cells[index];
+            }
           });
           studentsList.push(studentObj);
         }
