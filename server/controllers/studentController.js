@@ -10,6 +10,7 @@ const admitStudent = async (req, res, next) => {
     const {
       admissionNo,
       rollNo,
+      penNo,
       firstName,
       lastName,
       dob,
@@ -113,6 +114,7 @@ const admitStudent = async (req, res, next) => {
       parent: parentDoc._id,
       admissionNo,
       rollNo,
+      penNo,
       firstName,
       lastName,
       dob,

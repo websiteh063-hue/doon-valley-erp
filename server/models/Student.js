@@ -83,6 +83,11 @@ const studentSchema = new mongoose.Schema({
     state: String,
     zip: String,
   },
+  penNo: {
+    type: String,
+    trim: true,
+    default: '',
+  },
   currentSession: {
     type: String,
     required: true,

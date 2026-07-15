@@ -15,6 +15,7 @@ export default function Students() {
     firstName: '',
     lastName: '',
     rollNo: '',
+    penNo: '',
     class: '',
     section: '',
     parent: {
@@ -79,6 +80,7 @@ export default function Students() {
       firstName: student.firstName || '',
       lastName: student.lastName || '',
       rollNo: student.rollNo || '',
+      penNo: student.penNo || '',
       class: student.class || 'Class I',
       section: student.section || 'A',
       parent: {
@@ -274,7 +276,7 @@ export default function Students() {
             ) : (
               <div className="space-y-6">
                 {/* Academic Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4.5 bg-slate-900/40 border border-slate-850 rounded-2xl">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 p-4.5 bg-slate-900/40 border border-slate-850 rounded-2xl">
                   <div>
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase">Full Name</span>
                     <p className="text-xs font-bold text-slate-200">{viewingStudent.firstName} {viewingStudent.lastName}</p>
@@ -290,6 +292,10 @@ export default function Students() {
                   <div>
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase">Roll No</span>
                     <p className="text-xs font-bold text-slate-200">{viewingStudent.rollNo || '-'}</p>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-slate-500 font-extrabold uppercase">PEN Number</span>
+                    <p className="text-xs font-bold text-slate-200 font-mono">{viewingStudent.penNo || '-'}</p>
                   </div>
                 </div>
 
@@ -435,7 +441,7 @@ export default function Students() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               <div>
                 <label className={labelClass}>Roll Number</label>
                 <input
@@ -443,6 +449,16 @@ export default function Students() {
                   name="rollNo"
                   className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
                   value={editFormData.rollNo}
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>PEN Number</label>
+                <input
+                  type="text"
+                  name="penNo"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs font-mono"
+                  value={editFormData.penNo || ''}
                   onChange={handleEditChange}
                 />
               </div>

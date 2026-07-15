@@ -10,6 +10,7 @@ export default function Admissions() {
   const [formData, setFormData] = useState({
     admissionNo: '',
     rollNo: '',
+    penNo: '',
     firstName: '',
     lastName: '',
     dob: '',
@@ -80,6 +81,7 @@ export default function Admissions() {
       setFormData({
         admissionNo: '',
         rollNo: '',
+        penNo: '',
         firstName: '',
         lastName: '',
         dob: '',
@@ -174,7 +176,7 @@ export default function Admissions() {
             <h3 className="font-extrabold text-white text-sm tracking-widest uppercase">Academic & Personal Profile</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <label className={labelClass}>Admission No *</label>
               <input
@@ -195,6 +197,17 @@ export default function Admissions() {
                 placeholder="e.g. 12"
                 className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
                 value={formData.rollNo}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>PEN Number (Optional)</label>
+              <input
+                type="text"
+                name="penNo"
+                placeholder="Permanent Education No"
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={formData.penNo || ''}
                 onChange={handleChange}
               />
             </div>
