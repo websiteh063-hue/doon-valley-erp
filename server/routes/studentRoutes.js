@@ -6,10 +6,12 @@ const {
   getStudentById,
   updateStudent,
   promoteStudents,
+  bulkImportStudents,
 } = require('../controllers/studentController');
 const { protect, authorize } = require('../middleware/auth');
 
 router.post('/admit', protect, authorize('Super Admin', 'Office Admin', 'Principal'), admitStudent);
+router.post('/bulk-import', protect, authorize('Super Admin', 'Office Admin', 'Principal'), bulkImportStudents);
 router.get('/', protect, authorize('Super Admin', 'Principal', 'Office Admin', 'Teacher', 'Class Teacher'), getStudents);
 router.get('/:id', protect, getStudentById);
 router.put('/:id', protect, authorize('Super Admin', 'Office Admin', 'Principal'), updateStudent);

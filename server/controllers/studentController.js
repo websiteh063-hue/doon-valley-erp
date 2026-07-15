@@ -245,10 +245,135 @@ const promoteStudents = async (req, res, next) => {
   }
 };
 
+const bulkImportStudents = async (req, res, next) => {
+  try {
+    const { studentsList } = req.body;
+    if (!studentsList || !Array.isArray(studentsList)) {
+      return res.status(400).json({ success: false, message: 'Invalid bulk import list' });
+    }
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const item of studentsList) {
+      try {
+        const {
+          admissionNo,
+          rollNo,
+          penNo,
+          firstName,
+          lastName,
+          dob,
+          gender,
+          class: className,
+          section,
+          currentSession,
+          fatherName,
+          fatherAadhaar,
+          motherName,
+          motherAadhaar,
+          mobile,
+          email
+        } = item;
+
+        if (!admissionNo || !firstName || !lastName || !className || !section || !mobile) {
+          errorCount++;
+          continue;
+        }
+
+        const userExists = await User.findOne({ username: admissionNo });
+        const studentExists = await Student.findOne({ admissionNo });
+        if (userExists || studentExists) {
+          errorCount++;
+          continue;
+        }
+
+        let parentDoc = null;
+        if (fatherAadhaar) {
+          parentDoc = await Parent.findOne({ fatherAadhaar });
+        }
+        if (!parentDoc && motherAadhaar) {
+          parentDoc = await Parent.findOne({ motherAadhaar });
+        }
+        if (!parentDoc) {
+          parentDoc = await Parent.findOne({ mobile });
+        }
+
+        if (!parentDoc) {
+          const parentUser = new User({
+            username: mobile,
+            password: mobile,
+            role: 'Parent',
+            mobile,
+            email,
+            isFirstLogin: true
+          });
+          const savedParentUser = await parentUser.save();
+
+          parentDoc = new Parent({
+            user: savedParentUser._id,
+            fatherName,
+            fatherAadhaar,
+            fatherOccupation: '',
+            motherName,
+            motherAadhaar,
+            motherOccupation: '',
+            mobile,
+            email,
+            children: []
+          });
+          await parentDoc.save();
+        }
+
+        const studentUser = new User({
+          username: admissionNo,
+          password: mobile,
+          role: 'Student',
+          isFirstLogin: true,
+          mobile
+        });
+        const savedStudentUser = await studentUser.save();
+
+        const studentDoc = new Student({
+          user: savedStudentUser._id,
+          parent: parentDoc._id,
+          admissionNo,
+          rollNo,
+          penNo,
+          firstName,
+          lastName,
+          dob: dob ? new Date(dob) : new Date(),
+          gender: gender || 'Male',
+          class: className,
+          section,
+          currentSession: currentSession || '2026-2027'
+        });
+        const savedStudent = await studentDoc.save();
+
+        parentDoc.children.push(savedStudent._id);
+        await parentDoc.save();
+
+        successCount++;
+      } catch (err) {
+        console.error('Error importing row:', err);
+        errorCount++;
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Bulk import completed. Successfully imported: ${successCount}. Failures/Duplicates skipped: ${errorCount}.`
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   admitStudent,
   getStudents,
   getStudentById,
   updateStudent,
   promoteStudents,
+  bulkImportStudents,
 };
