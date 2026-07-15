@@ -225,28 +225,16 @@ export default function Admissions() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className={labelClass}>First Name *</label>
+              <label className={labelClass}>Student Name *</label>
               <input
                 type="text"
                 required
                 name="firstName"
-                placeholder="First name"
+                placeholder="Full Student Name"
                 className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
                 value={formData.firstName}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>Last Name *</label>
-              <input
-                type="text"
-                required
-                name="lastName"
-                placeholder="Last name"
-                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
-                value={formData.lastName}
                 onChange={handleChange}
               />
             </div>
@@ -264,6 +252,7 @@ export default function Admissions() {
             <div>
               <label className={labelClass}>Gender *</label>
               <select
+                required
                 name="gender"
                 className="w-full premium-input py-2.5 px-4 text-slate-300 focus:outline-none text-xs cursor-pointer"
                 value={formData.gender}

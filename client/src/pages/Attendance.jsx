@@ -46,7 +46,7 @@ export default function Attendance() {
       setStudents(
         list.map((s) => ({
           _id: s._id,
-          name: `${s.firstName} ${s.lastName}`,
+          name: s.firstName,
           admissionNo: s.admissionNo,
           rollNo: s.rollNo,
           attendance: 'Present'

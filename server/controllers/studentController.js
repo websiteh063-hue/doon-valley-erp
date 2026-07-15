@@ -28,7 +28,7 @@ const admitStudent = async (req, res, next) => {
       parentDetails // { fatherName, motherName, mobile, email, fatherOccupation, motherOccupation }
     } = req.body;
 
-    if (!admissionNo || !firstName || !lastName || !dob || !gender || !className || !section || !currentSession || !parentDetails) {
+    if (!admissionNo || !firstName || !dob || !gender || !className || !section || !currentSession || !parentDetails) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields' });
     }
 
@@ -276,7 +276,7 @@ const bulkImportStudents = async (req, res, next) => {
           email
         } = item;
 
-        if (!admissionNo || !firstName || !lastName || !className || !section || !mobile) {
+        if (!admissionNo || !firstName || !className || !section || !mobile) {
           errorCount++;
           continue;
         }

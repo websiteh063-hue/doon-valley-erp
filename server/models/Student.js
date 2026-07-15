@@ -27,8 +27,8 @@ const studentSchema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    required: true,
     trim: true,
+    default: '',
   },
   dob: {
     type: Date,

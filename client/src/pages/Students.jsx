@@ -93,7 +93,7 @@ export default function Students() {
       const term = keyword.toLowerCase();
 
       const matched = list.filter((s) => {
-        const fullName = `${s.firstName} ${s.lastName}`.toLowerCase();
+        const fullName = s.firstName.toLowerCase();
         const admNo = s.admissionNo.toLowerCase();
         const fatherName = s.parent?.fatherName?.toLowerCase() || '';
         const mobile = s.parent?.mobile || '';
@@ -436,7 +436,7 @@ export default function Students() {
                   <td className="py-4.5 px-6 text-slate-455 font-mono">{s.rollNo || '-'}</td>
                   <td className="py-4.5 px-6 font-bold text-slate-200 flex items-center gap-2">
                     <User size={14} className="text-slate-500" />
-                    {s.firstName} {s.lastName}
+                    {s.firstName}
                   </td>
                   <td className="py-4.5 px-6 text-slate-400">{s.class} - {s.section}</td>
                   <td className="py-4.5 px-6 text-slate-400">{s.parent?.fatherName || '-'}</td>
@@ -480,7 +480,7 @@ export default function Students() {
                 <User size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-white leading-tight">{viewingStudent.firstName} {viewingStudent.lastName}</h3>
+                <h3 className="text-xl font-extrabold text-white leading-tight">{viewingStudent.firstName}</h3>
                 <span className="badge-indigo mt-1 text-[8px] font-bold tracking-widest uppercase px-2 py-0.5 rounded">
                   {viewingStudent.class} - {viewingStudent.section}
                 </span>
@@ -497,7 +497,7 @@ export default function Students() {
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 p-4.5 bg-slate-900/40 border border-slate-850 rounded-2xl">
                   <div>
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase">Full Name</span>
-                    <p className="text-xs font-bold text-slate-200">{viewingStudent.firstName} {viewingStudent.lastName}</p>
+                    <p className="text-xs font-bold text-slate-200">{viewingStudent.firstName}</p>
                   </div>
                   <div>
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase">Adm No</span>
@@ -600,7 +600,7 @@ export default function Students() {
                         <tbody className="divide-y divide-slate-850/50">
                           {siblings.map((sib) => (
                             <tr key={sib._id} className="hover:bg-slate-900/20">
-                              <td className="py-2.5 px-4 font-bold text-slate-200">{sib.firstName} {sib.lastName}</td>
+                              <td className="py-2.5 px-4 font-bold text-slate-200">{sib.firstName}</td>
                               <td className="py-2.5 px-4 font-mono text-indigo-400">{sib.admissionNo}</td>
                               <td className="py-2.5 px-4 font-semibold text-slate-355">{sib.class} - {sib.section}</td>
                               <td className="py-2.5 px-4 font-mono text-slate-450">{sib.currentSession}</td>
@@ -634,29 +634,16 @@ export default function Students() {
               Edit Student Details ({editFormData.firstName})
             </h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className={labelClass}>First Name</label>
-                <input
-                  type="text"
-                  required
-                  name="firstName"
-                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
-                  value={editFormData.firstName}
-                  onChange={handleEditChange}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Last Name</label>
-                <input
-                  type="text"
-                  required
-                  name="lastName"
-                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
-                  value={editFormData.lastName}
-                  onChange={handleEditChange}
-                />
-              </div>
+            <div>
+              <label className={labelClass}>Student Name</label>
+              <input
+                type="text"
+                required
+                name="firstName"
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={editFormData.firstName}
+                onChange={handleEditChange}
+              />
             </div>
 
             <div className="grid grid-cols-4 gap-4">

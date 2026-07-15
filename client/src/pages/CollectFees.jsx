@@ -49,7 +49,7 @@ export default function CollectFees() {
       if (keyword) {
         const term = keyword.toLowerCase();
         list = list.filter((s) => {
-          const fullName = `${s.firstName} ${s.lastName}`.toLowerCase();
+          const fullName = s.firstName.toLowerCase();
           const admNo = s.admissionNo.toLowerCase();
           const mob = s.parent?.mobile || '';
           return fullName.includes(term) || admNo.includes(term) || mob.includes(term);
@@ -261,7 +261,7 @@ export default function CollectFees() {
                       <td className="py-4.5 px-6 text-slate-400 font-semibold">{s.rollNo || '-'}</td>
                       <td className="py-4.5 px-6 font-bold text-slate-200 flex items-center gap-2">
                         <User size={14} className="text-slate-500" />
-                        {s.firstName} {s.lastName}
+                        {s.firstName}
                       </td>
                       <td className="py-4.5 px-6 text-slate-400">{s.class} - {s.section}</td>
                       <td className="py-4.5 px-6 text-slate-450 font-mono">{s.parent?.mobile || '-'}</td>
@@ -310,7 +310,7 @@ export default function CollectFees() {
                     <User size={32} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-extrabold text-white">{paymentStudent.firstName} {paymentStudent.lastName}</h2>
+                    <h2 className="text-xl font-extrabold text-white">{paymentStudent.firstName}</h2>
                     <span className="badge-indigo font-bold px-2 py-0.5 rounded text-[8px] uppercase tracking-wide">
                       {paymentStudent.class} - {paymentStudent.section}
                     </span>
@@ -362,7 +362,7 @@ export default function CollectFees() {
                       <tr className="bg-indigo-900/10 hover:bg-indigo-900/20 transition-all font-semibold">
                         <td className="py-4 px-6 text-slate-200 flex items-center gap-1.5">
                           <CheckCircle size={12} className="text-indigo-400" />
-                          {paymentStudent.firstName} {paymentStudent.lastName} (Self)
+                          {paymentStudent.firstName} (Self)
                         </td>
                         <td className="py-4 px-6 font-mono text-indigo-400">{paymentStudent.admissionNo}</td>
                         <td className="py-4 px-6 uppercase text-slate-350">{paymentStudent.class} ({paymentStudent.section})</td>
@@ -383,7 +383,7 @@ export default function CollectFees() {
                                 onClick={() => handleSiblingLinkClick(sib.admissionNo)}
                                 className="hover:underline hover:text-indigo-300 text-left transition-all cursor-pointer font-bold"
                               >
-                                {sib.firstName} {sib.lastName}
+                                {sib.firstName}
                               </button>
                             </td>
                             <td className="py-3.5 px-6 font-mono text-slate-450">{sib.admissionNo}</td>
@@ -457,10 +457,10 @@ export default function CollectFees() {
               Collect Sibling Fee
             </h3>
 
-            <div className="space-y-2 border-b border-slate-850 pb-4 text-xs">
+            <div className="space-y-2 border-b border-slate-855 pb-4 text-xs">
               <div className="flex justify-between">
                 <span className="text-slate-500 font-bold uppercase">Collecting for:</span>
-                <span className="text-slate-200 font-bold">{paymentStudent.firstName} {paymentStudent.lastName}</span>
+                <span className="text-slate-200 font-bold">{paymentStudent.firstName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500 font-bold uppercase">Pending Balance:</span>
