@@ -134,12 +134,34 @@ export default function Students() {
     document.body.removeChild(link);
   };
 
+  const getFilteredExportData = () => {
+    let list = [...students];
+    if (selectedClass) {
+      list = list.filter((s) => s.class?.toLowerCase().trim() === selectedClass.toLowerCase().trim());
+    }
+    if (selectedSection) {
+      list = list.filter((s) => s.section?.toLowerCase().trim() === selectedSection.toLowerCase().trim());
+    }
+    if (keyword) {
+      const term = keyword.toLowerCase();
+      list = list.filter((s) => {
+        const fullName = s.firstName.toLowerCase();
+        const admNo = s.admissionNo.toLowerCase();
+        const fatherName = s.parent?.fatherName?.toLowerCase() || '';
+        const mobile = s.parent?.mobile || '';
+        return fullName.includes(term) || admNo.includes(term) || fatherName.includes(term) || mobile.includes(term);
+      });
+    }
+    return list;
+  };
+
   const copyToClipboard = () => {
-    if (students.length === 0) {
+    const listToExport = getFilteredExportData();
+    if (listToExport.length === 0) {
       alert("No student data available to copy.");
       return;
     }
-    const text = students.map((s) => 
+    const text = listToExport.map((s) => 
       `${s.admissionNo}\t${s.rollNo || '-'}\t${s.firstName}\t${s.class} - ${s.section}\t${s.parent?.fatherName || '-'}\t${s.parent?.mobile || '-'}`
     ).join('\n');
     navigator.clipboard.writeText(text);
@@ -147,13 +169,14 @@ export default function Students() {
   };
 
   const exportStudentsToCSV = (format = 'CSV') => {
-    if (students.length === 0) {
+    const listToExport = getFilteredExportData();
+    if (listToExport.length === 0) {
       alert("No student data available to export.");
       return;
     }
     const headers = "admissionNo,rollNo,penNo,studentName,dob,gender,class,section,fatherName,fatherAadhaar,motherName,motherAadhaar,mobile,email\n";
     
-    const rows = students.map((s) => {
+    const rows = listToExport.map((s) => {
       return [
         s.admissionNo,
         s.rollNo || '',
@@ -551,7 +574,7 @@ export default function Students() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850/50">
-              {students.map((s) => (
+              {getFilteredExportData().map((s) => (
                 <tr key={s._id} className="hover:bg-slate-900/20 transition-all duration-200 group">
                   {visibleColumns.admissionNo && <td className="py-4.5 px-6 font-mono font-bold text-indigo-400">{s.admissionNo}</td>}
                   {visibleColumns.rollNo && <td className="py-4.5 px-6 text-slate-455 font-mono">{s.rollNo || '-'}</td>}
