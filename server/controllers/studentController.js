@@ -44,7 +44,17 @@ const admitStudent = async (req, res, next) => {
     }
 
     // 1. Process Parent
-    let parentDoc = await Parent.findOne({ mobile: parentDetails.mobile });
+    let parentDoc = null;
+    if (parentDetails.fatherAadhaar) {
+      parentDoc = await Parent.findOne({ fatherAadhaar: parentDetails.fatherAadhaar });
+    }
+    if (!parentDoc && parentDetails.motherAadhaar) {
+      parentDoc = await Parent.findOne({ motherAadhaar: parentDetails.motherAadhaar });
+    }
+    if (!parentDoc) {
+      parentDoc = await Parent.findOne({ mobile: parentDetails.mobile });
+    }
+
     if (!parentDoc) {
       // Create user for Parent
       const parentUser = new User({
@@ -62,13 +72,29 @@ const admitStudent = async (req, res, next) => {
         user: savedParentUser._id,
         fatherName: parentDetails.fatherName,
         fatherOccupation: parentDetails.fatherOccupation,
+        fatherAadhaar: parentDetails.fatherAadhaar,
         motherName: parentDetails.motherName,
         motherOccupation: parentDetails.motherOccupation,
+        motherAadhaar: parentDetails.motherAadhaar,
         mobile: parentDetails.mobile,
         email: parentDetails.email,
         children: []
       });
       await parentDoc.save();
+    } else {
+      // If parent exists, make sure to add Aadhaar numbers if they were missing before
+      let modified = false;
+      if (parentDetails.fatherAadhaar && !parentDoc.fatherAadhaar) {
+        parentDoc.fatherAadhaar = parentDetails.fatherAadhaar;
+        modified = true;
+      }
+      if (parentDetails.motherAadhaar && !parentDoc.motherAadhaar) {
+        parentDoc.motherAadhaar = parentDetails.motherAadhaar;
+        modified = true;
+      }
+      if (modified) {
+        await parentDoc.save();
+      }
     }
 
     // 2. Create Student User
@@ -145,7 +171,16 @@ const getStudentById = async (req, res, next) => {
     if (!student) {
       return res.status(404).json({ success: false, message: 'Student profile not found' });
     }
-    res.status(200).json({ success: true, student });
+    
+    let siblings = [];
+    if (student.parent) {
+      siblings = await Student.find({
+        parent: student.parent._id,
+        _id: { $ne: student._id }
+      }).select('admissionNo firstName lastName class section currentSession');
+    }
+
+    res.status(200).json({ success: true, student, siblings });
   } catch (error) {
     next(error);
   }

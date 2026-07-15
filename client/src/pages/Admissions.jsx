@@ -27,8 +27,10 @@ export default function Admissions() {
     parentDetails: {
       fatherName: '',
       fatherOccupation: '',
+      fatherAadhaar: '',
       motherName: '',
       motherOccupation: '',
+      motherAadhaar: '',
       mobile: '',
       email: '',
     }
@@ -95,8 +97,10 @@ export default function Admissions() {
         parentDetails: {
           fatherName: '',
           fatherOccupation: '',
+          fatherAadhaar: '',
           motherName: '',
           motherOccupation: '',
+          motherAadhaar: '',
           mobile: '',
           email: '',
         }
@@ -357,7 +361,7 @@ export default function Admissions() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className={labelClass}>Parent Email</label>
               <input
@@ -377,6 +381,44 @@ export default function Admissions() {
                 placeholder="Father occupation"
                 className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
                 value={formData.parentDetails.fatherOccupation}
+                onChange={(e) => handleChange(e, 'parentDetails')}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Mother Occupation</label>
+              <input
+                type="text"
+                name="motherOccupation"
+                placeholder="Mother occupation"
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={formData.parentDetails.motherOccupation || ''}
+                onChange={(e) => handleChange(e, 'parentDetails')}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className={labelClass}>Father Aadhaar Number *</label>
+              <input
+                type="text"
+                required
+                name="fatherAadhaar"
+                placeholder="12-digit Aadhaar number"
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={formData.parentDetails.fatherAadhaar || ''}
+                onChange={(e) => handleChange(e, 'parentDetails')}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Mother Aadhaar Number *</label>
+              <input
+                type="text"
+                required
+                name="motherAadhaar"
+                placeholder="12-digit Aadhaar number"
+                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                value={formData.parentDetails.motherAadhaar || ''}
                 onChange={(e) => handleChange(e, 'parentDetails')}
               />
             </div>

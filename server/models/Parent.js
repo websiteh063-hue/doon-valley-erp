@@ -15,12 +15,20 @@ const parentSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  fatherAadhaar: {
+    type: String,
+    trim: true,
+  },
   motherName: {
     type: String,
     required: true,
     trim: true,
   },
   motherOccupation: {
+    type: String,
+    trim: true,
+  },
+  motherAadhaar: {
     type: String,
     trim: true,
   },
