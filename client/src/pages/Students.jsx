@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import api from '../services/api';
-import { Search, User, Edit, Eye, X, Contact, Phone, Mail, Award, CheckCircle, Download, FileSpreadsheet, Upload } from 'lucide-react';
+import { Search, User, Edit, Eye, X, Contact, Phone, Mail, Award, CheckCircle, Download, FileSpreadsheet, Upload, Copy, FileText, Printer, ChevronDown } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Students() {
@@ -10,7 +10,7 @@ export default function Students() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  // Criteria search state (matching the dual search layout of the uploaded image)
+  // Criteria search state
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSection, setSelectedSection] = useState('');
   const [keyword, setKeyword] = useState('');
@@ -18,6 +18,18 @@ export default function Students() {
   // Bulk Import state
   const [importStatus, setImportStatus] = useState('');
   const [importLoading, setImportLoading] = useState(false);
+
+  // Column visibility state
+  const [visibleColumns, setVisibleColumns] = useState({
+    admissionNo: true,
+    rollNo: true,
+    studentName: true,
+    classSection: true,
+    fatherName: true,
+    parentMobile: true,
+    actions: true
+  });
+  const [showColumnDropdown, setShowColumnDropdown] = useState(false);
 
   const [editingStudent, setEditingStudent] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -109,7 +121,7 @@ export default function Students() {
 
   const downloadCSVTemplate = () => {
     const headers = "admissionNo,rollNo,penNo,studentName,dob,gender,class,section,currentSession,fatherName,fatherAadhaar,motherName,motherAadhaar,mobile,email\n";
-    const sampleRow = "DVHS2026101,15,PEN9876543,Rahul Kumar,2015-05-12,Male,Class I,A,2026-2027,Suresh Kumar,123456789012,Sunita Devi,9876543210,suresh@gmail.com\n";
+    const sampleRow = "DVHS2026101,15,PEN9876543,Rahul Kumar,2015-05-12,Male,Class I,A,2026-27,Suresh Kumar,123456789012,Sunita Devi,9876543210,suresh@gmail.com\n";
     
     const blob = new Blob([headers + sampleRow], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -122,7 +134,19 @@ export default function Students() {
     document.body.removeChild(link);
   };
 
-  const exportStudentsToCSV = () => {
+  const copyToClipboard = () => {
+    if (students.length === 0) {
+      alert("No student data available to copy.");
+      return;
+    }
+    const text = students.map((s) => 
+      `${s.admissionNo}\t${s.rollNo || '-'}\t${s.firstName}\t${s.class} - ${s.section}\t${s.parent?.fatherName || '-'}\t${s.parent?.mobile || '-'}`
+    ).join('\n');
+    navigator.clipboard.writeText(text);
+    alert("Student roster copied to clipboard!");
+  };
+
+  const exportStudentsToCSV = (format = 'CSV') => {
     if (students.length === 0) {
       alert("No student data available to export.");
       return;
@@ -152,11 +176,15 @@ export default function Students() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `Students_Export_${academicSession}.csv`);
+    link.setAttribute("download", `Students_Export_${academicSession}.${format === 'Excel' ? 'xls' : 'csv'}`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const triggerPrint = () => {
+    window.print();
   };
 
   const handleCSVImport = (e) => {
@@ -276,10 +304,43 @@ export default function Students() {
     }
   };
 
+  const toggleColumn = (col) => {
+    setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+  };
+
   const labelClass = "block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2";
 
   return (
     <div className="space-y-8">
+      {/* Dynamic Printing Style Tag */}
+      <style>{`
+        @media print {
+          body * {
+            visibility: hidden !important;
+          }
+          .printable-table, .printable-table * {
+            visibility: visible !important;
+          }
+          .printable-table {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            color: #000 !important;
+            background: #fff !important;
+          }
+          .printable-table th {
+            color: #000 !important;
+            background: #f1f5f9 !important;
+            border-bottom: 2px solid #000 !important;
+          }
+          .printable-table td {
+            color: #000 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+          }
+        }
+      `}</style>
+
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white mb-2 font-sans">Student Directory</h1>
         <p className="text-slate-400 text-sm">View comprehensive student files, manage parent linkages, audit siblings, and run import/export routines.</p>
@@ -291,7 +352,7 @@ export default function Students() {
         </div>
       )}
 
-      {/* Select Criteria Box - Styled exactly like the uploaded reference image */}
+      {/* Select Criteria Box */}
       <div className="glass-panel rounded-3xl p-6 border border-slate-850 space-y-6">
         <h3 className="font-extrabold text-white text-xs tracking-widest uppercase border-b border-slate-800 pb-3 flex items-center gap-2">
           <Search size={14} className="text-indigo-400" />
@@ -335,7 +396,7 @@ export default function Students() {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="px-5 py-2 bg-indigo-700 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 uppercase tracking-wider"
+                className="px-5 py-2 bg-indigo-750 hover:bg-indigo-650 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 uppercase tracking-wider"
               >
                 <Search size={14} /> Search
               </button>
@@ -358,7 +419,7 @@ export default function Students() {
             <div className="flex justify-end pt-2">
               <button
                 type="submit"
-                className="px-5 py-2 bg-indigo-700 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 uppercase tracking-wider"
+                className="px-5 py-2 bg-indigo-750 hover:bg-indigo-650 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 uppercase tracking-wider"
               >
                 <Search size={14} /> Search
               </button>
@@ -368,19 +429,82 @@ export default function Students() {
         </div>
       </div>
 
-      {/* Bulk CSV Import & Export Panel */}
-      <div className="glass-panel rounded-3xl p-6 border border-slate-850 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-slate-900/40 border border-slate-800 rounded-2xl w-fit text-cyan-400">
-            <FileSpreadsheet size={22} />
-          </div>
-          <div>
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">Bulk Student Import & Export</h4>
-            <p className="text-[10px] text-slate-400 mt-1">Download csv templates, upload files for batch onboarding, and export records.</p>
+      {/* Datatable Toolbar & Batch Import Actions */}
+      <div className="glass-panel rounded-3xl p-6 border border-slate-850 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        
+        {/* Left Side: Datatable Action Buttons (Matching User Reference Image) */}
+        <div className="flex flex-wrap items-center bg-[#070b19] border border-slate-800 rounded-xl overflow-hidden shadow-2xl relative">
+          <button
+            onClick={copyToClipboard}
+            className="p-3 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center border-r border-slate-800 cursor-pointer"
+            title="Copy to Clipboard"
+          >
+            <Copy size={15} />
+          </button>
+          
+          <button
+            onClick={() => exportStudentsToCSV('Excel')}
+            className="p-3 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center border-r border-slate-800 cursor-pointer"
+            title="Export Excel"
+          >
+            <FileSpreadsheet size={15} />
+          </button>
+          
+          <button
+            onClick={() => exportStudentsToCSV('CSV')}
+            className="p-3 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center border-r border-slate-800 cursor-pointer"
+            title="Export CSV"
+          >
+            <FileText size={15} />
+          </button>
+          
+          <button
+            onClick={triggerPrint}
+            className="p-3 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center border-r border-slate-800 cursor-pointer"
+            title="Download PDF"
+          >
+            <FileText size={15} className="text-red-400" />
+          </button>
+          
+          <button
+            onClick={triggerPrint}
+            className="p-3 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center border-r border-slate-800 cursor-pointer"
+            title="Print Table"
+          >
+            <Printer size={15} />
+          </button>
+
+          {/* Column Visibility Trigger Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowColumnDropdown(!showColumnDropdown)}
+              className="px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1.5 cursor-pointer text-[10px] font-bold uppercase tracking-wider"
+            >
+              Column visibility
+              <ChevronDown size={12} />
+            </button>
+
+            {showColumnDropdown && (
+              <div className="absolute right-0 top-full mt-2 w-48 bg-[#0b1329] border border-slate-800 rounded-xl shadow-2xl z-40 p-3 space-y-2 text-xs text-slate-200">
+                <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1.5 pb-1 border-b border-slate-800">Toggle Columns</p>
+                {Object.keys(visibleColumns).map((col) => (
+                  <label key={col} className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={visibleColumns[col]}
+                      onChange={() => toggleColumn(col)}
+                      className="rounded accent-indigo-500 border-slate-800 bg-slate-900"
+                    />
+                    <span className="capitalize">{col.replace(/([A-Z])/g, ' $1')}</span>
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Right Side: CSV Template & Import actions */}
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
           <button
             onClick={downloadCSVTemplate}
             className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
@@ -388,7 +512,7 @@ export default function Students() {
             <Download size={14} /> CSV Template
           </button>
 
-          <label className="px-4 py-2.5 bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 border border-indigo-600/20 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+          <label className="px-4 py-2.5 bg-indigo-650/15 text-indigo-400 hover:bg-indigo-600/20 border border-indigo-600/20 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
             {importLoading ? <CircularProgress size={14} color="inherit" /> : <Upload size={14} />}
             <span>Import CSV</span>
             <input
@@ -399,18 +523,12 @@ export default function Students() {
               className="hidden"
             />
           </label>
-
-          <button
-            onClick={exportStudentsToCSV}
-            className="btn-glow px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Download size={14} /> Export Students
-          </button>
         </div>
+
       </div>
 
       {/* Directory Table */}
-      <div className="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-850">
+      <div className="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-850 printable-table">
         {loading ? (
           <div className="flex items-center justify-center p-16">
             <CircularProgress size={32} color="inherit" />
@@ -423,43 +541,47 @@ export default function Students() {
           <table className="w-full border-collapse text-left text-xs">
             <thead>
               <tr className="border-b border-slate-800 text-slate-450 uppercase tracking-widest font-bold bg-slate-900/40 text-[10px]">
-                <th className="py-4.5 px-6">Admission No</th>
-                <th className="py-4.5 px-6">Roll No</th>
-                <th className="py-4.5 px-6">Student Name</th>
-                <th className="py-4.5 px-6">Class & Section</th>
-                <th className="py-4.5 px-6">Father Name</th>
-                <th className="py-4.5 px-6">Parent Mobile</th>
-                <th className="py-4.5 px-6 text-right">Actions</th>
+                {visibleColumns.admissionNo && <th className="py-4.5 px-6">Admission No</th>}
+                {visibleColumns.rollNo && <th className="py-4.5 px-6">Roll No</th>}
+                {visibleColumns.studentName && <th className="py-4.5 px-6">Student Name</th>}
+                {visibleColumns.classSection && <th className="py-4.5 px-6">Class & Section</th>}
+                {visibleColumns.fatherName && <th className="py-4.5 px-6">Father Name</th>}
+                {visibleColumns.parentMobile && <th className="py-4.5 px-6">Parent Mobile</th>}
+                {visibleColumns.actions && <th className="py-4.5 px-6 text-right">Actions</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850/50">
               {students.map((s) => (
                 <tr key={s._id} className="hover:bg-slate-900/20 transition-all duration-200 group">
-                  <td className="py-4.5 px-6 font-mono font-bold text-indigo-400">{s.admissionNo}</td>
-                  <td className="py-4.5 px-6 text-slate-455 font-mono">{s.rollNo || '-'}</td>
-                  <td className="py-4.5 px-6 font-bold text-slate-200 flex items-center gap-2">
-                    <User size={14} className="text-slate-500" />
-                    {s.firstName}
-                  </td>
-                  <td className="py-4.5 px-6 text-slate-400">{s.class} - {s.section}</td>
-                  <td className="py-4.5 px-6 text-slate-400">{s.parent?.fatherName || '-'}</td>
-                  <td className="py-4.5 px-6 text-slate-450 font-mono">{s.parent?.mobile || '-'}</td>
-                  <td className="py-4.5 px-6 text-right space-x-2">
-                    <button
-                      onClick={() => openProfileDetails(s)}
-                      className="bg-indigo-600/10 text-indigo-400 border border-indigo-600/25 hover:bg-indigo-600 hover:text-white p-2 rounded-xl cursor-pointer transition-all"
-                      title="View Profile Details"
-                    >
-                      <Eye size={14} />
-                    </button>
-                    <button
-                      onClick={() => openEditModal(s)}
-                      className="bg-cyan-600/10 text-cyan-400 border border-cyan-600/25 hover:bg-cyan-600 hover:text-white p-2 rounded-xl cursor-pointer transition-all"
-                      title="Edit Profile"
-                    >
-                      <Edit size={14} />
-                    </button>
-                  </td>
+                  {visibleColumns.admissionNo && <td className="py-4.5 px-6 font-mono font-bold text-indigo-400">{s.admissionNo}</td>}
+                  {visibleColumns.rollNo && <td className="py-4.5 px-6 text-slate-455 font-mono">{s.rollNo || '-'}</td>}
+                  {visibleColumns.studentName && (
+                    <td className="py-4.5 px-6 font-bold text-slate-200 flex items-center gap-2">
+                      <User size={14} className="text-slate-500" />
+                      {s.firstName}
+                    </td>
+                  )}
+                  {visibleColumns.classSection && <td className="py-4.5 px-6 text-slate-400">{s.class} - {s.section}</td>}
+                  {visibleColumns.fatherName && <td className="py-4.5 px-6 text-slate-400">{s.parent?.fatherName || '-'}</td>}
+                  {visibleColumns.parentMobile && <td className="py-4.5 px-6 text-slate-450 font-mono">{s.parent?.mobile || '-'}</td>}
+                  {visibleColumns.actions && (
+                    <td className="py-4.5 px-6 text-right space-x-2">
+                      <button
+                        onClick={() => openProfileDetails(s)}
+                        className="bg-indigo-600/10 text-indigo-400 border border-indigo-600/25 hover:bg-indigo-600 hover:text-white p-2 rounded-xl cursor-pointer transition-all"
+                        title="View Profile Details"
+                      >
+                        <Eye size={14} />
+                      </button>
+                      <button
+                        onClick={() => openEditModal(s)}
+                        className="bg-cyan-600/10 text-cyan-400 border border-cyan-600/25 hover:bg-cyan-600 hover:text-white p-2 rounded-xl cursor-pointer transition-all"
+                        title="Edit Profile"
+                      >
+                        <Edit size={14} />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -473,7 +595,7 @@ export default function Students() {
           <div className="w-full max-w-2xl h-full bg-slate-900 border-l border-slate-850 p-6 md:p-8 overflow-y-auto space-y-8 relative shadow-2xl">
             <button
               onClick={() => setViewingStudent(null)}
-              className="absolute top-6 right-6 text-slate-450 hover:text-white cursor-pointer"
+              className="absolute top-6 right-6 text-slate-455 hover:text-white cursor-pointer"
             >
               <X size={22} />
             </button>
@@ -637,16 +759,29 @@ export default function Students() {
               Edit Student Details ({editFormData.firstName})
             </h3>
 
-            <div>
-              <label className={labelClass}>Student Name</label>
-              <input
-                type="text"
-                required
-                name="firstName"
-                className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
-                value={editFormData.firstName}
-                onChange={handleEditChange}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>First Name</label>
+                <input
+                  type="text"
+                  required
+                  name="firstName"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.firstName}
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Last Name</label>
+                <input
+                  type="text"
+                  required
+                  name="lastName"
+                  className="w-full premium-input py-2.5 px-4 text-slate-200 focus:outline-none text-xs"
+                  value={editFormData.lastName}
+                  onChange={handleEditChange}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-4 gap-4">
