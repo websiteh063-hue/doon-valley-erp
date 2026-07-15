@@ -2,6 +2,40 @@ const Student = require('../models/Student');
 const User = require('../models/User');
 const Parent = require('../models/Parent');
 
+const normalizeClassName = (className) => {
+  if (!className) return '';
+  let name = className.trim().toLowerCase();
+  
+  if (name === 'nursery') return 'Nursery';
+  if (name === 'kg' || name === 'k.g.' || name === 'kindergarten') return 'KG';
+
+  name = name.replace(/^class[- ]/g, '');
+  
+  const arabicToRoman = {
+    '1': 'i', '2': 'ii', '3': 'iii', '4': 'iv', '5': 'v',
+    '6': 'vi', '7': 'vii', '8': 'viii', '9': 'ix', '10': 'x',
+    'i': 'i', 'ii': 'ii', 'iii': 'iii', 'iv': 'iv', 'v': 'v',
+    'vi': 'vi', 'vii': 'vii', 'viii': 'viii', 'ix': 'ix', 'x': 'x'
+  };
+
+  const roman = arabicToRoman[name];
+  if (roman) {
+    return `Class ${roman.toUpperCase()}`;
+  }
+  
+  return className.trim();
+};
+
+const normalizeSession = (session) => {
+  if (!session) return '';
+  const trimmed = session.trim();
+  const match = trimmed.match(/^(\d{4})-(\d{4})$/);
+  if (match) {
+    return `${match[1]}-${match[2].substring(2)}`;
+  }
+  return trimmed;
+};
+
 // @desc    Admit a new student
 // @route   POST /api/students/admit
 // @access  Private (Super Admin, Office Admin, Principal)
@@ -126,9 +160,9 @@ const admitStudent = async (req, res, next) => {
       medicalHistory,
       previousSchool,
       address,
-      class: className ? className.trim() : '',
-      section: section ? section.trim() : '',
-      currentSession: currentSession ? currentSession.trim() : ''
+      class: normalizeClassName(className),
+      section: section ? section.trim().toUpperCase() : '',
+      currentSession: normalizeSession(currentSession)
     });
     const savedStudent = await studentDoc.save();
 
@@ -151,16 +185,29 @@ const admitStudent = async (req, res, next) => {
 // @access  Private (Super Admin, Principal, Office Admin, Teacher)
 const getStudents = async (req, res, next) => {
   try {
+    const allStds = await Student.find({});
+    for (const s of allStds) {
+      const normClass = normalizeClassName(s.class);
+      const normSession = normalizeSession(s.currentSession);
+      const normSec = s.section ? s.section.trim().toUpperCase() : '';
+      if (normClass !== s.class || normSession !== s.currentSession || normSec !== s.section) {
+        s.class = normClass;
+        s.currentSession = normSession;
+        s.section = normSec;
+        await s.save();
+      }
+    }
+
     const { class: className, section, currentSession } = req.query;
     const filter = {};
     if (className) {
-      filter.class = { $regex: new RegExp(`^\\s*${className.trim()}\\s*$`, 'i') };
+      filter.class = { $regex: new RegExp(`^\\s*${normalizeClassName(className)}\\s*$`, 'i') };
     }
     if (section) {
       filter.section = { $regex: new RegExp(`^\\s*${section.trim()}\\s*$`, 'i') };
     }
     if (currentSession) {
-      filter.currentSession = { $regex: new RegExp(`^\\s*${currentSession.trim()}\\s*$`, 'i') };
+      filter.currentSession = { $regex: new RegExp(`^\\s*${normalizeSession(currentSession)}\\s*$`, 'i') };
     }
 
     const students = await Student.find(filter).populate('parent');
@@ -350,9 +397,9 @@ const bulkImportStudents = async (req, res, next) => {
           lastName,
           dob: dob ? new Date(dob) : new Date(),
           gender: gender || 'Male',
-          class: className ? className.trim() : '',
-          section: section ? section.trim() : '',
-          currentSession: currentSession ? currentSession.trim() : '2026-2027'
+          class: normalizeClassName(className),
+          section: section ? section.trim().toUpperCase() : '',
+          currentSession: normalizeSession(currentSession) || '2026-27'
         });
         const savedStudent = await studentDoc.save();
 
