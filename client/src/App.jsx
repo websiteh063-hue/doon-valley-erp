@@ -14,6 +14,7 @@ import Students from './pages/Students';
 import ClassesConfig from './pages/ClassesConfig';
 import FeesConfig from './pages/FeesConfig';
 import Attendance from './pages/Attendance';
+import AttendanceReport from './pages/AttendanceReport';
 import HrCategories from './pages/HrCategories';
 import Employees from './pages/Employees';
 import ReportsPage from './pages/ReportsPage';
@@ -51,6 +52,7 @@ export default function App() {
                 <Route path="/classes-config" element={<ClassesConfig />} />
                 <Route path="/fees-config" element={<FeesConfig />} />
                 <Route path="/attendance" element={<Attendance />} />
+                <Route path="/attendance-report" element={<AttendanceReport />} />
                 <Route path="/hr-categories" element={<HrCategories />} />
                 <Route path="/employees" element={<Employees />} />
                 <Route path="/reports" element={<ReportsPage />} />

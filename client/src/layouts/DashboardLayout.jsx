@@ -58,7 +58,14 @@ export default function DashboardLayout() {
             { name: 'Collect Fee', path: '/collect-fees' }
           ]
         },
-        { name: 'Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
+        {
+          name: 'Attendance',
+          icon: <CheckCircle size={18} />,
+          children: [
+            { name: 'Student Attendance', path: '/attendance' },
+            { name: 'Attendance Report', path: '/attendance-report' }
+          ]
+        },
         { name: 'HR Management', path: '/hr-categories', icon: <Contact size={18} /> },
         { name: 'Employee Management', path: '/employees', icon: <Users size={18} /> },
         { name: 'Reports', path: '/reports', icon: <FileText size={18} /> }
@@ -83,7 +90,14 @@ export default function DashboardLayout() {
     if (user?.role === 'Teacher' || user?.role === 'Class Teacher') {
       return [
         ...common,
-        { name: 'Attendance', path: '/attendance', icon: <CheckCircle size={18} /> },
+        {
+          name: 'Attendance',
+          icon: <CheckCircle size={18} />,
+          children: [
+            { name: 'Student Attendance', path: '/attendance' },
+            { name: 'Attendance Report', path: '/attendance-report' }
+          ]
+        },
         { name: 'Reports', path: '/reports', icon: <FileText size={18} /> }
       ];
     }
